@@ -64,16 +64,16 @@ public class VueControleur extends JFrame implements Observer {
 
 
     private void chargerLesIcones() {
-        icoHero = chargerIcone("Images/Pacman.png");
-        icoCaseNormale = chargerIcone("Images/Vide.png");
-        icoMur = chargerIcone("Images/Mur.png");
+        icoHero = chargerIcone("/img/Pacman.png");
+        icoCaseNormale = chargerIcone("/img/Vide.png");
+        icoMur = chargerIcone("/img/Mur.png");
     }
 
     private ImageIcon chargerIcone(String urlIcone) {
         BufferedImage image = null;
 
         try {
-            image = ImageIO.read(new File(urlIcone));
+            image = ImageIO.read(VueControleur.class.getResourceAsStream(urlIcone));
         } catch (IOException ex) {
             Logger.getLogger(VueControleur.class.getName()).log(Level.SEVERE, null, ex);
             return null;
