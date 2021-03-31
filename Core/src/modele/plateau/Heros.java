@@ -74,10 +74,15 @@ public class Heros {
         }
     }
 
+    public void setPosition(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
     private boolean traversable(int x, int y) {
 
-        if (x > 0 && x < jeu.SIZE_X && y > 0 && y < jeu.SIZE_Y) {
-            return jeu.getEntite(x, y).traversable();
+        if (x > 0 && x < Salle.SIZE_X && y > 0 && y < Salle.SIZE_Y) {
+            return jeu.currentSalle().getEntite(x, y).traversable();
         } else {
             return false;
         }

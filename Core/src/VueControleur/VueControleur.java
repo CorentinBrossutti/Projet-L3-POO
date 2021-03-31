@@ -15,6 +15,7 @@ import javax.swing.*;
 
 
 import modele.plateau.*;
+import modele.plateau.entites.Porte;
 
 
 /** Cette classe a deux fonctions :
@@ -38,8 +39,8 @@ public class VueControleur extends JFrame implements Observer {
 
 
     public VueControleur(Jeu _jeu) {
-        sizeX = jeu.SIZE_X;
-        sizeY = _jeu.SIZE_Y;
+        sizeX = Salle.SIZE_X;
+        sizeY = Salle.SIZE_Y;
         jeu = _jeu;
 
         chargerLesIcones();
@@ -67,6 +68,7 @@ public class VueControleur extends JFrame implements Observer {
         icoHero = chargerIcone("/img/Pacman.png");
         icoCaseNormale = chargerIcone("/img/Vide.png");
         icoMur = chargerIcone("/img/Mur.png");
+        icoColonne = chargerIcone("/img/Colonne.png");
     }
 
     private RotatableImageIcon chargerIcone(String urlIcone) {
@@ -109,11 +111,13 @@ public class VueControleur extends JFrame implements Observer {
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-				EntiteStatique e = jeu.getEntite(x, y);
+				EntiteStatique e = jeu.currentSalle().getEntite(x, y);
                 if (e instanceof Mur) {
                     tabJLabel[x][y].setIcon(icoMur);
                 } else if (e instanceof CaseNormale) {
                     tabJLabel[x][y].setIcon(icoCaseNormale);
+                } else if (e instanceof Porte) {
+                    tabJLabel[x][y].setIcon(icoColonne);
                 }
             }
         }
