@@ -29,11 +29,10 @@ public class VueControleur extends JFrame implements Observer {
     private int sizeY;
 
     // icones affichées dans la grille
-    private ImageIcon icoHero;
-    private ImageIcon icoCaseNormale;
-    private ImageIcon icoMur;
-    private ImageIcon icoColonne;
-    private ImageIcon icoCaseUnique;
+    private RotatableImageIcon icoHero;
+    private RotatableImageIcon icoCaseNormale;
+    private RotatableImageIcon icoMur;
+    private RotatableImageIcon icoColonne;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -65,23 +64,22 @@ public class VueControleur extends JFrame implements Observer {
 
 
     private void chargerLesIcones() {
-        icoHero = chargerIcone("Images/Pacman.png");
-        icoCaseNormale = chargerIcone("Images/Vide.png");
-        icoMur = chargerIcone("Images/Mur.png");
-        icoCaseUnique = chargerIcone("Images/Vide.png");
+        icoHero = chargerIcone("/img/Pacman.png");
+        icoCaseNormale = chargerIcone("/img/Vide.png");
+        icoMur = chargerIcone("/img/Mur.png");
     }
 
-    private ImageIcon chargerIcone(String urlIcone) {
+    private RotatableImageIcon chargerIcone(String urlIcone) {
         BufferedImage image = null;
 
         try {
-            image = ImageIO.read(new File(urlIcone));
+            image = ImageIO.read(VueControleur.class.getResourceAsStream(urlIcone));
         } catch (IOException ex) {
             Logger.getLogger(VueControleur.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 
-        return new ImageIcon(image);
+        return new RotatableImageIcon(image);
     }
 
     private void placerLesComposantsGraphiques() {
@@ -121,9 +119,8 @@ public class VueControleur extends JFrame implements Observer {
         }
 
 
-
+        icoHero.rotate(jeu.getHeros().getRotation());
         tabJLabel[jeu.getHeros().getX()][jeu.getHeros().getY()].setIcon(icoHero);
-
     }
 
     @Override
