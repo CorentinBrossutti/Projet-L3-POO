@@ -1,4 +1,4 @@
-package modele.plateau.portes;
+package modele.plateau.entites;
 
 import modele.plateau.inventaire.Cle;
 
