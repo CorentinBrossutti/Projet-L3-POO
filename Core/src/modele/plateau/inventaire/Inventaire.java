@@ -16,4 +16,8 @@ public class Inventaire {
     public void retirer(Objet objet){
         objets.remove(objet);
     }
+
+    public void removeType(Class<? extends Objet> type){
+        objets.removeIf(obj -> obj.getClass().equals(type));
+    }
 }

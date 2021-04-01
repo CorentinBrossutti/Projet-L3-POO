@@ -81,8 +81,8 @@ public class Heros {
 
     private boolean traversable(int x, int y) {
 
-        if (x > 0 && x < Salle.SIZE_X && y > 0 && y < Salle.SIZE_Y) {
-            return jeu.currentSalle().getEntite(x, y).traversable();
+        if (x >= 0 && x <= Salle.SIZE_X && y >= 0 && y <= Salle.SIZE_Y) {
+            return jeu.currentSalle().getEntite(x, y).traversable(this);
         } else {
             return false;
         }

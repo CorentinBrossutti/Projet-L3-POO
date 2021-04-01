@@ -15,7 +15,13 @@ import javax.swing.*;
 
 
 import modele.plateau.*;
+import modele.plateau.entites.Empty;
 import modele.plateau.entites.Porte;
+import modele.plateau.inventaire.Capsule;
+import modele.plateau.inventaire.Cle;
+import modele.plateau.inventaire.Coffre;
+import modele.plateau.inventaire.Objet;
+import modele.plateau.pickup.NoItem;
 
 
 /** Cette classe a deux fonctions :
@@ -34,6 +40,11 @@ public class VueControleur extends JFrame implements Observer {
     private RotatableImageIcon icoCaseNormale;
     private RotatableImageIcon icoMur;
     private RotatableImageIcon icoColonne;
+    private RotatableImageIcon wall;
+    private RotatableImageIcon bottle;
+    private RotatableImageIcon key;
+    private RotatableImageIcon chest;
+    private RotatableImageIcon door;
 
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
 
@@ -69,6 +80,11 @@ public class VueControleur extends JFrame implements Observer {
         icoCaseNormale = chargerIcone("/img/Vide.png");
         icoMur = chargerIcone("/img/Mur.png");
         icoColonne = chargerIcone("/img/Colonne.png");
+        wall = chargerIcone("/img/wall.png");
+        bottle = chargerIcone("/img/Bouteille.png");
+        key = chargerIcone("/img/Cle.png");
+        chest = chargerIcone("/img/Coffre.png");
+        door = chargerIcone("/img/door.png");
     }
 
     private RotatableImageIcon chargerIcone(String urlIcone) {
@@ -113,11 +129,14 @@ public class VueControleur extends JFrame implements Observer {
             for (int y = 0; y < sizeY; y++) {
 				EntiteStatique e = jeu.currentSalle().getEntite(x, y);
                 if (e instanceof Mur) {
-                    tabJLabel[x][y].setIcon(icoMur);
+                    tabJLabel[x][y].setIcon(wall);
                 } else if (e instanceof CaseNormale) {
-                    tabJLabel[x][y].setIcon(icoCaseNormale);
+                    CaseNormale cn = (CaseNormale) e;
+                    tabJLabel[x][y].setIcon(cn.item instanceof NoItem ? icoCaseNormale : getItemIcon(cn.item));
                 } else if (e instanceof Porte) {
-                    tabJLabel[x][y].setIcon(icoColonne);
+                    tabJLabel[x][y].setIcon(door);
+                } else if (e instanceof Empty) {
+                    tabJLabel[x][y].setIcon(icoMur);
                 }
             }
         }
@@ -139,5 +158,15 @@ public class VueControleur extends JFrame implements Observer {
                 }); 
         */
 
+    }
+
+    private ImageIcon getItemIcon(Objet item){
+        if(item instanceof Capsule)
+            return bottle;
+        else if(item instanceof Cle)
+            return key;
+        else if(item instanceof Coffre)
+            return chest;
+        return null;
     }
 }

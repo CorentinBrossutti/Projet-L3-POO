@@ -1,6 +1,7 @@
 package modele.plateau.entites;
 
 import modele.plateau.EntiteStatique;
+import modele.plateau.Heros;
 import modele.plateau.Salle;
 import modele.plateau.inventaire.Cle;
 
@@ -22,7 +23,7 @@ public class Porte extends EntiteStatique implements Verrouillable{
     }
 
     @Override
-    public boolean traversable() {
+    public boolean traversable(Heros character) {
         if(verrouillee)
             return false;
         salle.terminate();

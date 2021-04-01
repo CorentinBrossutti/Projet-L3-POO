@@ -10,6 +10,6 @@ public abstract class EntiteStatique {
         this.salle = _salle;
     }
 
-    public abstract boolean traversable();
+    public abstract boolean traversable(Heros character);
 
 }
