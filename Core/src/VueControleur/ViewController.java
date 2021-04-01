@@ -1,10 +1,11 @@
 package VueControleur;
 
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
@@ -14,12 +15,8 @@ import javax.swing.*;
 
 
 import modele.plateau.*;
+import modele.plateau.items.*;
 import modele.plateau.statics.*;
-import modele.plateau.items.WaterCap;
-import modele.plateau.items.Key;
-import modele.plateau.items.Chest;
-import modele.plateau.items.Item;
-import modele.plateau.items.NoItem;
 
 
 /** Cette classe a deux fonctions :
@@ -28,25 +25,30 @@ import modele.plateau.items.NoItem;
  *
  */
 public class ViewController extends JFrame implements Observer {
-    private Game game; // référence sur une classe de modèle : permet d'accéder aux données du modèle pour le rafraichissement, permet de communiquer les actions clavier (ou souris)
+    private static int
+            GRID_SIZE_X = Room.SIZE_X,
+            GRID_SIZE_Y = Room.SIZE_Y,
+            WINDOW_SIZE_X = 620,
+            WINDOW_SIZE_Y = 330;
 
-    private int sizeX = Room.SIZE_X; // taille de la grille affichée
-    private int sizeY = Room.SIZE_Y;
+    private Game game; // référence sur une classe de modèle : permet d'accéder aux données du modèle pour le rafraichissement, permet de communiquer les actions clavier (ou souris)
 
     // icones affichées dans la grille
     private RotatableImageIcon
             player,
             normalSlot,
             wall,
-            bottle,
-            key,
-            chest,
             door,
             hole,
             singleUse,
             fire;
 
     private JLabel[][] viewGrid; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
+
+    private JComponent inventoryDisplay;
+    private JLabel[][] inventoryGrid;
+    private WeightedItemSupplier itemSupplier = new WeightedItemSupplier();
+    private Map<Class<? extends Item>, RotatableImageIcon> itemIcons;
 
 
     public ViewController(Game game) {
@@ -63,6 +65,8 @@ public class ViewController extends JFrame implements Observer {
                     case KeyEvent.VK_DOWN: game.getPlayer().getController().move(Player.Orientation.DOWN); break;
                     case KeyEvent.VK_UP: game.getPlayer().getController().move(Player.Orientation.UP); break;
                     case KeyEvent.VK_C: game.getPlayer().getController().use(WaterCap.class); break;
+                    case KeyEvent.VK_SPACE: game.getPlayer().getController().jump(); break;
+                    case KeyEvent.VK_I: inventoryDisplay.setVisible(!inventoryDisplay.isVisible()); break;
                 }
             }
         });
@@ -72,13 +76,17 @@ public class ViewController extends JFrame implements Observer {
         player = loadIconResource("/img/pacman.png");
         normalSlot = loadIconResource("/img/normal.png");
         wall = loadIconResource("/img/wall.png");
-        bottle = loadIconResource("/img/wbottle.png");
-        key = loadIconResource("/img/key.png");
-        chest = loadIconResource("/img/chest.png");
         door = loadIconResource("/img/door.png");
         hole = loadIconResource("/img/void.png");
         singleUse = loadIconResource("/img/column.png");
         fire = loadIconResource("/img/fire.png");
+
+        itemIcons = Map.of(
+                Chest.class, loadIconResource("/img/chest.png"),
+                Key.class, loadIconResource("/img/key.png"),
+                NoItem.class, loadIconResource("/img/normal.png"),
+                WaterCap.class, loadIconResource("/img/wbottle.png")
+        );
     }
 
     private RotatableImageIcon loadIconResource(String url) {
@@ -96,21 +104,39 @@ public class ViewController extends JFrame implements Observer {
 
     private void initGraphics() {
         setTitle("Roguelike");
-        setSize(400, 250);
+        setSize(WINDOW_SIZE_X, WINDOW_SIZE_Y);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
-        JComponent tempGrid = new JPanel(new GridLayout(sizeY, sizeX)); // tempGrid va contenir les cases graphiques et les positionner sous la forme d'une grille
+        int itemCount = itemSupplier.count();
+        viewGrid = new JLabel[GRID_SIZE_X][GRID_SIZE_Y];
+        inventoryGrid = new JLabel[2][itemCount];
 
-        viewGrid = new JLabel[sizeX][sizeY];
+        JComponent root = new JPanel();
+        JComponent tempGrid = new JPanel(new GridLayout(GRID_SIZE_Y, GRID_SIZE_X)); // tempGrid va contenir les cases graphiques et les positionner sous la forme d'une grille
+        inventoryDisplay = new JPanel(new GridLayout(itemCount, 2));
 
-        for (int y = 0; y < sizeY; y++) {
-            for (int x = 0; x < sizeX; x++) {
+        for (int y = 0; y < GRID_SIZE_Y; y++) {
+            for (int x = 0; x < GRID_SIZE_X; x++) {
                 JLabel jl = new JLabel();
                 viewGrid[x][y] = jl; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique à celles-ci (voir mettreAJourAffichage() )
                 tempGrid.add(jl);
             }
         }
-        add(tempGrid);
+        for (int y = 0; y < itemCount; y++) {
+            for (int x = 0; x < 2; x++) {
+                JLabel jl = new JLabel();
+                inventoryGrid[x][y] = jl;
+                inventoryDisplay.add(jl);
+            }
+        }
+
+        ((FlowLayout)root.getLayout()).setAlignment(FlowLayout.LEFT);
+        tempGrid.setBounds(0, 0, Double.valueOf(getWidth() * 0.75).intValue(), getHeight());
+        root.add(tempGrid);
+        inventoryDisplay.setVisible(false);
+        inventoryDisplay.setBounds(Double.valueOf(getWidth() * 0.75).intValue() + 1, 0, Double.valueOf(getWidth() * 0.25).intValue(), getHeight());
+        root.add(inventoryDisplay);
+        add(root);
     }
 
     
@@ -119,8 +145,8 @@ public class ViewController extends JFrame implements Observer {
      */
     private void updateDisplay() {
 
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
+        for (int x = 0; x < GRID_SIZE_X; x++) {
+            for (int y = 0; y < GRID_SIZE_Y; y++) {
 				StaticEntity e = game.currentRoom().getStatic(x, y);
                 if (e instanceof Wall) {
                     viewGrid[x][y].setIcon(wall);
@@ -128,7 +154,7 @@ public class ViewController extends JFrame implements Observer {
                     viewGrid[x][y].setIcon(((SingleUsageSlot) e).isUsed() ? fire : singleUse);
                 } else if (e instanceof NormalSlot) {
                     NormalSlot cn = (NormalSlot) e;
-                    viewGrid[x][y].setIcon(cn.item instanceof NoItem ? normalSlot : getItemIcon(cn.item));
+                    viewGrid[x][y].setIcon(cn.item == null || cn.item instanceof NoItem ? normalSlot : itemIcons.get(cn.item.getClass()));
                 } else if (e instanceof Door) {
                     viewGrid[x][y].setIcon(door);
                 } else if (e instanceof Hole) {
@@ -137,9 +163,11 @@ public class ViewController extends JFrame implements Observer {
             }
         }
 
-
         player.rotate(game.getPlayer().getOrientation().getRadians());
         viewGrid[game.getPlayer().getPosition().x][game.getPlayer().getPosition().y].setIcon(player);
+
+        if(inventoryDisplay.isVisible())
+            updateInventoryDisplay(game.getPlayer().getInventory());
     }
 
     @Override
@@ -156,13 +184,14 @@ public class ViewController extends JFrame implements Observer {
 
     }
 
-    private ImageIcon getItemIcon(Item item){
-        if(item instanceof WaterCap)
-            return bottle;
-        else if(item instanceof Key)
-            return key;
-        else if(item instanceof Chest)
-            return chest;
-        return null;
+    private void updateInventoryDisplay(Inventory inv){
+        int i = 0;
+        for(Class<? extends Item> itemType : itemSupplier.baseList()){
+            if(itemType.equals(NoItem.class))
+                continue;
+
+            inventoryGrid[0][i].setIcon(itemIcons.get(itemType));
+            inventoryGrid[1][i++].setText(" x" + inv.count(itemType));
+        }
     }
 }

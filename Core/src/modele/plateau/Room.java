@@ -1,17 +1,14 @@
 package modele.plateau;
 
 import modele.plateau.statics.*;
-import modele.plateau.items.Item;
-import modele.plateau.items.WeightedItemSupplier;
 import util.Position;
 import util.Util;
 
-import java.util.List;
 import java.util.Random;
 
 public class Room {
-    public static final int SIZE_X = 20;
-    public static final int SIZE_Y = 10;
+    public static final int SIZE_X = 30;
+    public static final int SIZE_Y = 15;
 
     private final StaticEntity[][] grid = new StaticEntity[SIZE_X][SIZE_Y];
     private Position start, exit = new Position(-1, -1);
@@ -55,13 +52,13 @@ public class Room {
             addStatic(new NormalSlot(this), start);
 
         // murs extérieurs horizontaux
-        for (int x = 0; x < 20; x++) {
+        for (int x = 0; x < SIZE_X; x++) {
             addStatic(new Wall(this), x, 0);
             addStatic(new Wall(this), x, SIZE_Y - 1);
         }
 
         // murs extérieurs verticaux
-        for (int y = 1; y < 9; y++) {
+        for (int y = 1; y < SIZE_Y; y++) {
             addStatic(new Wall(this), 0, y);
             addStatic(new Wall(this), SIZE_X - 1, y);
         }
@@ -74,7 +71,7 @@ public class Room {
 
                 addStatic((temp = Gen.pickEntity(this)), x, y);
                 if(temp instanceof NormalSlot){
-                    ((NormalSlot)temp).item = Gen.pickItem(this);
+                    ((NormalSlot)temp).item = Gen.pickItem();
                     if(this.start.x < 0 || this.start.y < 0) {
                         this.start = new Position(x, y);
                     }
@@ -111,40 +108,4 @@ public class Room {
         done = true;
     }
 
-    public static final class Gen{
-        private static final Random rand = new Random();
-
-        public static List<Class<? extends StaticEntity>> entityPicker;
-        public static List<Class<? extends Item>> itemPicker;
-
-        static {
-            entityPicker = new WeightedEntitiesSupplier().supply();
-            itemPicker = new WeightedItemSupplier().supply();
-        }
-
-        public static StaticEntity pickEntity(Room room){
-            return Util.Reflections.instantiate(entityPicker.get(rand.nextInt(entityPicker.size())), room);
-        }
-
-        public static Item pickItem(Room room){
-            return Util.Reflections.instantiate(itemPicker.get(rand.nextInt(itemPicker.size())));
-        }
-
-        public static Position getSlotNextToDoor(Position doorPos){
-            switch(doorPos.x){
-                case 0:
-                    return new Position(1, doorPos.y);
-                case Room.SIZE_X - 1:
-                    return new Position(SIZE_X - 2, doorPos.y);
-                default:
-                    switch(doorPos.y){
-                        case 0:
-                            return new Position(doorPos.x, 1);
-                        case Room.SIZE_Y - 1:
-                            return new Position(doorPos.x, SIZE_Y - 2);
-                    }
-            }
-            return doorPos;
-        }
-    }
 }

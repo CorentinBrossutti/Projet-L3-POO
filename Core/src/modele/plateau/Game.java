@@ -11,8 +11,18 @@ import util.Position;
 import java.util.Observable;
 
 public class Game extends Observable implements Runnable {
-    private static final int PAUSE = 100; // période de rafraichissement
-    private static final int ROOM_COUNT = 3;
+    /**
+     * Valeur de tick, délai de rafraîchissement
+     */
+    public static final int PAUSE = 100;
+    /**
+     * Nombre de salles à franchir pour gagner
+     */
+    public static final int ROOM_COUNT = 3;
+    /**
+     * Le nombre de capsules lorsque l'on rentre dans une salle
+     */
+    public static int WCAP_COUNT = 1;
 
     private Player player;
     private Room[] rooms = new Room[ROOM_COUNT];
@@ -25,10 +35,11 @@ public class Game extends Observable implements Runnable {
 
     public Game() {
         for (int i = 0; i < ROOM_COUNT; i++){
-            Position spos = Room.Gen.getSlotNextToDoor(i == 0 ? new Position(-1, -1) : rooms[i - 1].getExit());
+            Position spos = Gen.getSlotNextToDoor(i == 0 ? new Position(-1, -1) : rooms[i - 1].getExit());
             rooms[i] = new Room(i == ROOM_COUNT - 1, spos);
         }
         player = new Player(this, rooms[0].getStart());
+        player.getInventory().add(WaterCap.class, WCAP_COUNT);
     }
 
     public Room currentRoom(){
@@ -48,6 +59,7 @@ public class Game extends Observable implements Runnable {
                 currentRoomIndex++;
                 player.setPosition(currentRoom().getStart());
                 player.getInventory().remomoveAllOf(WaterCap.class);
+                player.getInventory().add(WaterCap.class, WCAP_COUNT);
             }
 
             try {

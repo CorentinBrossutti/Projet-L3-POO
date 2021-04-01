@@ -1,12 +1,13 @@
 package modele.plateau;
 
 import modele.plateau.items.Item;
+import util.Util;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Inventory {
-    private ArrayList<Item> items = new ArrayList<>();
+    public final ArrayList<Item> items = new ArrayList<>();
 
     public Inventory(){
 
@@ -39,6 +40,11 @@ public class Inventory {
         items.add(item);
     }
 
+    public void add(Class<? extends Item> type, int count){
+        for (int i = 0; i < count; i++)
+            add(Util.Reflections.instantiate(type));
+    }
+
     public void remove(Item item){
         items.remove(item);
     }
@@ -55,5 +61,9 @@ public class Inventory {
                 return;
             }
         }
+    }
+
+    public void into(Inventory another){
+        another.items.addAll(items);
     }
 }

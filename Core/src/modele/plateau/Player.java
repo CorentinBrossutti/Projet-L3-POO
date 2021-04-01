@@ -6,6 +6,7 @@
 package modele.plateau;
 
 import modele.plateau.items.Item;
+import modele.plateau.statics.Hole;
 import modele.plateau.statics.StaticEntity;
 import util.Position;
 
@@ -87,6 +88,16 @@ public class Player {
             if(game.currentRoom().getStatic(orientation.getNextPos(position)).use(Player.this, item))
                 inventory.remove(item);
         }
+
+        public void jump(){
+            Position target = orientation.getNextPos(position, 2);
+            StaticEntity from = game.currentRoom().getStatic(orientation.getNextPos(position)),
+                    to = game.currentRoom().getStatic(target);
+            if(from instanceof Hole && !to.collide(Player.this)){
+                from.leave(Player.this);
+                setPosition(target);
+            }
+        }
     }
 
     public enum Orientation{
@@ -111,11 +122,15 @@ public class Player {
         }
 
         public Position getNextPos(Position pos){
+            return getNextPos(pos, 1);
+        }
+
+        public Position getNextPos(Position pos, int offset){
             return switch (this) {
-                case UP -> new Position(pos.x, pos.y - 1);
-                case LEFT -> new Position(pos.x - 1, pos.y);
-                case DOWN -> new Position(pos.x, pos.y + 1);
-                case RIGHT -> new Position(pos.x + 1, pos.y);
+                case UP -> new Position(pos.x, pos.y - offset);
+                case LEFT -> new Position(pos.x - offset, pos.y);
+                case DOWN -> new Position(pos.x, pos.y + offset);
+                case RIGHT -> new Position(pos.x + offset, pos.y);
             };
         }
     }
