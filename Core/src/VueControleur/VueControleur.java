@@ -1,6 +1,6 @@
 package VueControleur;
 
-import java.awt.*;
+import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
