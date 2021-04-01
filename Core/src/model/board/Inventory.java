@@ -1,6 +1,6 @@
-package modele.plateau;
+package model.board;
 
-import modele.plateau.items.Item;
+import model.board.items.Item;
 import util.Util;
 
 import java.util.ArrayList;

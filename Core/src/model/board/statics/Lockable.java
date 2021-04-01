@@ -1,6 +1,6 @@
-package modele.plateau.statics;
+package model.board.statics;
 
-import modele.plateau.items.Key;
+import model.board.items.Key;
 
 public interface Lockable {
     public boolean isLocked();

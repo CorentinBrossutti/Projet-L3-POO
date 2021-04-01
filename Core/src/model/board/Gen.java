@@ -1,9 +1,9 @@
-package modele.plateau;
+package model.board;
 
-import modele.plateau.items.Item;
-import modele.plateau.items.WeightedItemSupplier;
-import modele.plateau.statics.StaticEntity;
-import modele.plateau.statics.WeightedEntitiesSupplier;
+import model.board.statics.StaticEntity;
+import model.board.statics.WeightedEntitiesSupplier;
+import model.board.items.Item;
+import model.board.items.WeightedItemSupplier;
 import util.Position;
 import util.Util;
 

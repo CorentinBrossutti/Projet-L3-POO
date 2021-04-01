@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele.plateau;
+package model.board;
 
-import modele.plateau.items.Item;
-import modele.plateau.statics.Hole;
-import modele.plateau.statics.StaticEntity;
+import model.board.statics.StaticEntity;
+import model.board.items.Item;
+import model.board.statics.Hole;
 import util.Position;
 
 /**

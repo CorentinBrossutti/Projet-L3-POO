@@ -1,8 +1,8 @@
-package modele.plateau.items;
+package model.board.items;
 
-import modele.plateau.Gen;
-import modele.plateau.Inventory;
-import modele.plateau.Player;
+import model.board.Gen;
+import model.board.Inventory;
+import model.board.Player;
 
 public class Chest extends Item implements Pickable {
     public static final int CHEST_INVENTORY_SIZE = 10;

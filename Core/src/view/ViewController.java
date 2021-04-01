@@ -1,5 +1,14 @@
-package VueControleur;
+package view;
 
+import model.board.Game;
+import model.board.Inventory;
+import model.board.Player;
+import model.board.Room;
+import model.board.items.*;
+import model.board.statics.*;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -10,13 +19,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-
-import modele.plateau.*;
-import modele.plateau.items.*;
-import modele.plateau.statics.*;
 
 
 /** Cette classe a deux fonctions :
@@ -59,14 +61,15 @@ public class ViewController extends JFrame implements Observer {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un objet qui correspond au controleur dans MVC
             @Override
             public void keyPressed(KeyEvent e) {
-                switch(e.getKeyCode()) {  // on regarde quelle touche a été pressée
-                    case KeyEvent.VK_LEFT: game.getPlayer().getController().move(Player.Orientation.LEFT); break;
-                    case KeyEvent.VK_RIGHT: game.getPlayer().getController().move(Player.Orientation.RIGHT);break;
-                    case KeyEvent.VK_DOWN: game.getPlayer().getController().move(Player.Orientation.DOWN); break;
-                    case KeyEvent.VK_UP: game.getPlayer().getController().move(Player.Orientation.UP); break;
-                    case KeyEvent.VK_C: game.getPlayer().getController().use(WaterCap.class); break;
-                    case KeyEvent.VK_SPACE: game.getPlayer().getController().jump(); break;
-                    case KeyEvent.VK_I: inventoryDisplay.setVisible(!inventoryDisplay.isVisible()); break;
+                // on regarde quelle touche a été pressée
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT -> game.getPlayer().getController().move(Player.Orientation.LEFT);
+                    case KeyEvent.VK_RIGHT -> game.getPlayer().getController().move(Player.Orientation.RIGHT);
+                    case KeyEvent.VK_DOWN -> game.getPlayer().getController().move(Player.Orientation.DOWN);
+                    case KeyEvent.VK_UP -> game.getPlayer().getController().move(Player.Orientation.UP);
+                    case KeyEvent.VK_C -> game.getPlayer().getController().use(WaterCap.class);
+                    case KeyEvent.VK_SPACE -> game.getPlayer().getController().jump();
+                    case KeyEvent.VK_I -> inventoryDisplay.setVisible(!inventoryDisplay.isVisible());
                 }
             }
         });

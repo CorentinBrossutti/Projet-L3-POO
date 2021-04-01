@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modele.plateau;
+package model.board;
 
-import modele.plateau.items.WaterCap;
+import model.board.items.WaterCap;
 import util.Position;
 
 import java.util.Observable;

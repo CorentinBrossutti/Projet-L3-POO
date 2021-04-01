@@ -1,6 +1,9 @@
-package modele.plateau;
+package model.board;
 
-import modele.plateau.statics.*;
+import model.board.statics.Door;
+import model.board.statics.NormalSlot;
+import model.board.statics.StaticEntity;
+import model.board.statics.Wall;
 import util.Position;
 import util.Util;
 

@@ -1,6 +1,6 @@
 
-import VueControleur.ViewController;
-import modele.plateau.Game;
+import view.ViewController;
+import model.board.Game;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

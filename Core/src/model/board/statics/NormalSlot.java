@@ -1,10 +1,10 @@
-package modele.plateau.statics;
+package model.board.statics;
 
-import modele.plateau.Player;
-import modele.plateau.Room;
-import modele.plateau.items.Item;
-import modele.plateau.items.NoItem;
-import modele.plateau.items.Pickable;
+import model.board.Player;
+import model.board.items.Pickable;
+import model.board.Room;
+import model.board.items.Item;
+import model.board.items.NoItem;
 
 public class NormalSlot extends StaticEntity {
     public Item item;

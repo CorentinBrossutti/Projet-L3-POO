@@ -1,6 +1,6 @@
-package modele.plateau.items;
+package model.board.items;
 
-import modele.plateau.Player;
+import model.board.Player;
 
 public class WaterCap extends Item implements Pickable {
 

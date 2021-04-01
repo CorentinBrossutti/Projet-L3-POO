@@ -1,8 +1,8 @@
-package modele.plateau.statics;
+package model.board.statics;
 
-import modele.plateau.Player;
-import modele.plateau.Room;
-import modele.plateau.items.Item;
+import model.board.Player;
+import model.board.Room;
+import model.board.items.Item;
 
 /**
  * Ne bouge pas (murs...)

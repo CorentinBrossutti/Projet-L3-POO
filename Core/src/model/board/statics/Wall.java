@@ -1,8 +1,7 @@
-package modele.plateau.statics;
+package model.board.statics;
 
-import modele.plateau.Player;
-import modele.plateau.Room;
-import modele.plateau.statics.StaticEntity;
+import model.board.Player;
+import model.board.Room;
 
 public class Wall extends StaticEntity {
     public Wall(Room _room) { super(_room); }

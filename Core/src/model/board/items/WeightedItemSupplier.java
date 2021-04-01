@@ -1,6 +1,5 @@
-package modele.plateau.items;
+package model.board.items;
 
-import modele.plateau.items.*;
 import util.WeightedRandomSupplier;
 
 import java.util.Map;

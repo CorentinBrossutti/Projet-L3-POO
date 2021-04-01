@@ -1,4 +1,4 @@
-package modele.plateau.statics;
+package model.board.statics;
 
 import util.WeightedRandomSupplier;
 

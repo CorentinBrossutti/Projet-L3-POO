@@ -1,4 +1,4 @@
-package modele.plateau.items;
+package model.board.items;
 
 import java.util.UUID;
 
