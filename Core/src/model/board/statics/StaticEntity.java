@@ -16,6 +16,7 @@ public abstract class StaticEntity {
 
     /**
      * Retourne vrai s'il y a colllision
+     *
      * @param character Joueur
      * @return Vrai ou faux
      */
@@ -23,17 +24,20 @@ public abstract class StaticEntity {
 
     /**
      * Méthode exécutée lorsque le joueur quitte la case
+     *
      * @param character Joueur
      */
-    public void leave(Player character){}
+    public void leave(Player character) {
+    }
 
     /**
      * Méthode exécutée lorsque le joueur utilise un objet sur la case
+     *
      * @param character Le joueur
-     * @param item L'objet
+     * @param item      L'objet
      * @return Vrai si l'objet peut être utilisé (retiré de l'inventaire donc), faux sinon
      */
-    public boolean use(Player character, Item item){
+    public boolean use(Player character, Item item) {
         return false;
     }
 

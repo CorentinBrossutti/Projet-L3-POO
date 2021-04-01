@@ -21,10 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-/** Cette classe a deux fonctions :
- *  (1) Vue : proposer une représentation graphique de l'application (cases graphiques, etc.)
- *  (2) Controleur : écouter les évènements clavier et déclencher le traitement adapté sur le modèle (flèches direction, etc.))
- *
+/**
+ * Cette classe a deux fonctions :
+ * (1) Vue : proposer une représentation graphique de l'application (cases graphiques, etc.)
+ * (2) Controleur : écouter les évènements clavier et déclencher le traitement adapté sur le modèle (flèches direction, etc.))
  */
 public class ViewController extends JFrame implements Observer {
     private static int
@@ -93,7 +93,7 @@ public class ViewController extends JFrame implements Observer {
     }
 
     private RotatableImageIcon loadIconResource(String url) {
-        BufferedImage image = null;
+        BufferedImage image;
 
         try {
             image = ImageIO.read(ViewController.class.getResourceAsStream(url));
@@ -133,7 +133,7 @@ public class ViewController extends JFrame implements Observer {
             }
         }
 
-        ((FlowLayout)root.getLayout()).setAlignment(FlowLayout.LEFT);
+        ((FlowLayout) root.getLayout()).setAlignment(FlowLayout.LEFT);
         tempGrid.setBounds(0, 0, Double.valueOf(getWidth() * 0.75).intValue(), getHeight());
         root.add(tempGrid);
         inventoryDisplay.setVisible(false);
@@ -142,7 +142,7 @@ public class ViewController extends JFrame implements Observer {
         add(root);
     }
 
-    
+
     /**
      * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
      */
@@ -150,10 +150,10 @@ public class ViewController extends JFrame implements Observer {
 
         for (int x = 0; x < GRID_SIZE_X; x++) {
             for (int y = 0; y < GRID_SIZE_Y; y++) {
-				StaticEntity e = game.currentRoom().getStatic(x, y);
+                StaticEntity e = game.currentRoom().getStatic(x, y);
                 if (e instanceof Wall) {
                     viewGrid[x][y].setIcon(wall);
-                } else if(e instanceof SingleUsageSlot) {
+                } else if (e instanceof SingleUsageSlot) {
                     viewGrid[x][y].setIcon(((SingleUsageSlot) e).isUsed() ? fire : singleUse);
                 } else if (e instanceof NormalSlot) {
                     NormalSlot cn = (NormalSlot) e;
@@ -169,7 +169,7 @@ public class ViewController extends JFrame implements Observer {
         player.rotate(game.getPlayer().getOrientation().getRadians());
         viewGrid[game.getPlayer().getPosition().x][game.getPlayer().getPosition().y].setIcon(player);
 
-        if(inventoryDisplay.isVisible())
+        if (inventoryDisplay.isVisible())
             updateInventoryDisplay(game.getPlayer().getInventory());
     }
 
@@ -187,10 +187,10 @@ public class ViewController extends JFrame implements Observer {
 
     }
 
-    private void updateInventoryDisplay(Inventory inv){
+    private void updateInventoryDisplay(Inventory inv) {
         int i = 0;
-        for(Class<? extends Item> itemType : itemSupplier.baseList()){
-            if(itemType.equals(NoItem.class))
+        for (Class<? extends Item> itemType : itemSupplier.baseList()) {
+            if (itemType.equals(NoItem.class))
                 continue;
 
             inventoryGrid[0][i].setIcon(itemIcons.get(itemType));

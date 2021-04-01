@@ -1,6 +1,5 @@
-
-import view.ViewController;
 import model.board.Game;
+import view.ViewController;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -12,11 +11,11 @@ import model.board.Game;
 public class Main {
     public static void main(String[] args) {
         Game game = new Game();
-        
+
         ViewController vc = new ViewController(game);
 
         game.addObserver(vc);
-        
+
         vc.setVisible(true);
         game.start();
     }

@@ -12,6 +12,6 @@ public abstract class Item {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof Item && itemId.equals(((Item)o).itemId);
+        return o instanceof Item && itemId.equals(((Item) o).itemId);
     }
 }

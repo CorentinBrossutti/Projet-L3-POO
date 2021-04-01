@@ -23,7 +23,7 @@ public class Door extends StaticEntity implements Lockable {
 
     @Override
     public boolean collide(Player character) {
-        if(locked)
+        if (locked)
             return true;
         room.terminate();
         return false;

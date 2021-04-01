@@ -29,12 +29,8 @@ public class Game extends Observable implements Runnable {
     private int currentRoomIndex;
 
 
-    public Player getPlayer() {
-        return player;
-    }
-
     public Game() {
-        for (int i = 0; i < ROOM_COUNT; i++){
+        for (int i = 0; i < ROOM_COUNT; i++) {
             Position spos = Gen.getSlotNextToDoor(i == 0 ? new Position(-1, -1) : rooms[i - 1].getExit());
             rooms[i] = new Room(i == ROOM_COUNT - 1, spos);
         }
@@ -42,7 +38,11 @@ public class Game extends Observable implements Runnable {
         player.getInventory().add(WaterCap.class, WCAP_COUNT);
     }
 
-    public Room currentRoom(){
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Room currentRoom() {
         return rooms[currentRoomIndex];
     }
 
@@ -52,10 +52,10 @@ public class Game extends Observable implements Runnable {
 
     public void run() {
 
-        while(true) {
+        while (true) {
             setChanged();
             notifyObservers();
-            if(currentRoom().isDone()){
+            if (currentRoom().isDone()) {
                 currentRoomIndex++;
                 player.setPosition(currentRoom().getStart());
                 player.getInventory().remomoveAllOf(WaterCap.class);

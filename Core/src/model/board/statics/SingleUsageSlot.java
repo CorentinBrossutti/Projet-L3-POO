@@ -13,12 +13,12 @@ public class SingleUsageSlot extends NormalSlot {
     }
 
     // getter pour savoir si une case a été utilisée, si utilisée -> return true, sinon return false
-    public boolean isUsed(){
+    public boolean isUsed() {
         return used;
     }
 
     @Override
-    public boolean collide(Player player){
+    public boolean collide(Player player) {
         return used;
     }
 
@@ -30,7 +30,7 @@ public class SingleUsageSlot extends NormalSlot {
 
     @Override
     public boolean use(Player character, Item item) {
-        if(item instanceof WaterCap){
+        if (item instanceof WaterCap) {
             used = false;
             return true;
         }

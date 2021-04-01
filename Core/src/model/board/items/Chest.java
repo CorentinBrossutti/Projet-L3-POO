@@ -9,18 +9,18 @@ public class Chest extends Item implements Pickable {
 
     private Inventory inventory = new Inventory();
 
-    public Chest(){
+    public Chest() {
         this(true);
     }
 
-    public Chest(boolean gen){
-        if(gen){
+    public Chest(boolean gen) {
+        if (gen) {
             for (int i = 0; i < CHEST_INVENTORY_SIZE; i++)
                 inventory.add(Gen.pickItem());
         }
     }
 
-    public Inventory getInventory(){
+    public Inventory getInventory() {
         return inventory;
     }
 

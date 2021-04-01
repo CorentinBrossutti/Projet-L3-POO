@@ -1,9 +1,9 @@
 package model.board;
 
-import model.board.statics.StaticEntity;
-import model.board.statics.WeightedEntitiesSupplier;
 import model.board.items.Item;
 import model.board.items.WeightedItemSupplier;
+import model.board.statics.StaticEntity;
+import model.board.statics.WeightedEntitiesSupplier;
 import util.Position;
 import util.Util;
 
