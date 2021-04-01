@@ -1,8 +1,8 @@
 package modele.plateau;
 
 public class CaseUnique extends EntiteStatique {
-    public CaseUnique(Jeu _jeu) {
-        super(_jeu);
+    public CaseUnique(Salle _salle) {
+        super(_salle);
         this.used = false; // La case n'est pas encore traversée
     }
     // getter pour savoir si une case a été utilisée, si utilisée -> return true, sinon return false
