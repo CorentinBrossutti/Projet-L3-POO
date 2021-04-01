@@ -92,7 +92,6 @@ public class Jeu extends Observable implements Runnable {
 
     }
 
-
     private void addEntiteStatique(EntiteStatique e, int x, int y) {
         grilleEntitesStatiques[x][y] = e;
 
