@@ -5,9 +5,12 @@ import model.board.Room;
 import model.board.items.Item;
 
 /**
- * Ne bouge pas (murs...)
+ * Une entité statique (qui ne bouge pas)
  */
 public abstract class StaticEntity {
+    /**
+     * La salle dans laquelle se trouve cette entité statique
+     */
     protected Room room;
 
     public StaticEntity(Room _room) {
@@ -15,8 +18,7 @@ public abstract class StaticEntity {
     }
 
     /**
-     * Retourne vrai s'il y a colllision
-     *
+     * Retourne vrai s'il y a colllision, et donc si le joueur ne peut PAS passer
      * @param character Joueur
      * @return Vrai ou faux
      */
@@ -24,7 +26,6 @@ public abstract class StaticEntity {
 
     /**
      * Méthode exécutée lorsque le joueur quitte la case
-     *
      * @param character Joueur
      */
     public void leave(Player character) {
@@ -32,7 +33,6 @@ public abstract class StaticEntity {
 
     /**
      * Méthode exécutée lorsque le joueur utilise un objet sur la case
-     *
      * @param character Le joueur
      * @param item      L'objet
      * @return Vrai si l'objet peut être utilisé (retiré de l'inventaire donc), faux sinon

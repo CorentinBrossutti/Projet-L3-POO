@@ -5,34 +5,43 @@ import model.board.Room;
 import model.board.items.Item;
 import model.board.items.WaterCap;
 
+/**
+ * Une case à usage unique, qui devient inutilisable lorsqu'un joueur passe dessus (après l'avoir quittée)
+ */
 public class SingleUsageSlot extends NormalSlot {
-    protected boolean used;
+    /**
+     * Usable = false si la case est utilisée (ne peut pas passer dessus)
+     * Vrai sinon
+     */
+    protected boolean usable = true;
 
     public SingleUsageSlot(Room _room) {
         super(_room);
     }
 
-    // getter pour savoir si une case a été utilisée, si utilisée -> return true, sinon return false
-    public boolean isUsed() {
-        return used;
+    public boolean isUsable() {
+        return usable;
     }
 
     @Override
     public boolean collide(Player player) {
-        return used;
+        // Si la case est utilisée, le joueur ne peut pas la traverser (collision = vrai)
+        return !usable;
     }
 
     @Override
     public void leave(Player character) {
         super.leave(character);
-        used = true;
+        // La case devient utilisée lorsque le joueur passe dessus
+        usable = false;
     }
 
     @Override
     public boolean use(Player character, Item item) {
+        // Si le joueur essaie d'utiliser une capsule sur cette case...
         if (item instanceof WaterCap) {
-            used = false;
-            return true;
+            // Alors elle devient de nouveau utilisable
+            return (usable = true);
         }
         return false;
     }

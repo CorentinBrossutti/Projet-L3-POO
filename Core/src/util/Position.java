@@ -1,5 +1,8 @@
 package util;
 
+/**
+ * Objet "wrapper" pour une position 2d x y
+ */
 public class Position {
     public int x, y;
 

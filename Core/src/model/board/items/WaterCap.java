@@ -2,6 +2,9 @@ package model.board.items;
 
 import model.board.Player;
 
+/**
+ * Une capsule d'eau
+ */
 public class WaterCap extends Item implements Pickable {
 
     @Override

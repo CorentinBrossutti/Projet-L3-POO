@@ -4,6 +4,9 @@ import model.board.Player;
 import model.board.Room;
 import model.board.items.Key;
 
+/**
+ * Une porte, verrouillable
+ */
 public class Door extends StaticEntity implements Lockable {
     protected boolean locked;
 
@@ -23,8 +26,10 @@ public class Door extends StaticEntity implements Lockable {
 
     @Override
     public boolean collide(Player character) {
+        // Si la porte est verrouillée, alors il y a collision
         if (locked)
             return true;
+        // Sinon on quitte la pièce
         room.terminate();
         return false;
     }

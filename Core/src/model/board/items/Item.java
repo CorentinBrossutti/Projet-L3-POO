@@ -2,8 +2,11 @@ package model.board.items;
 
 import java.util.UUID;
 
+/**
+ * Un objet abstrait pouvant être disposé sur des cases
+ */
 public abstract class Item {
-    private UUID itemId = UUID.randomUUID();
+    private final UUID itemId = UUID.randomUUID();
 
     @Override
     public int hashCode() {

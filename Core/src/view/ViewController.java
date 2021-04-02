@@ -33,9 +33,9 @@ public class ViewController extends JFrame implements Observer {
             WINDOW_SIZE_X = 620,
             WINDOW_SIZE_Y = 330;
 
-    private Game game; // référence sur une classe de modèle : permet d'accéder aux données du modèle pour le rafraichissement, permet de communiquer les actions clavier (ou souris)
+    private Game game;
 
-    // icones affichées dans la grille
+    // Icônes de base pour les entités statiques
     private RotatableImageIcon
             player,
             normalSlot,
@@ -45,11 +45,25 @@ public class ViewController extends JFrame implements Observer {
             singleUse,
             fire;
 
-    private JLabel[][] viewGrid; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
+    /**
+     * Grille de jeu
+     */
+    private JLabel[][] viewGrid;
 
+    /**
+     * Composant d'affichage de l'inventaire
+     */
     private JComponent inventoryDisplay;
+    /**
+     * Grilles de l'inventaire, le premier indice correspond à la ligne de l'objet.
+     * Le deuxième indice correspond, en 0, au label (l'icône de l'objet) et en 1 à la quantité
+     */
     private JLabel[][] inventoryGrid;
-    private WeightedItemSupplier itemSupplier = new WeightedItemSupplier();
+
+    private final WeightedItemSupplier itemSupplier = new WeightedItemSupplier();
+    /**
+     * Map liant les types d'objet à leurs icônes
+     */
     private Map<Class<? extends Item>, RotatableImageIcon> itemIcons;
 
 
@@ -92,6 +106,11 @@ public class ViewController extends JFrame implements Observer {
         );
     }
 
+    /**
+     * Charge une icône contenue dans le jar en tant que ressources
+     * @param url Url de ressource, sous une forme acceptée par {@link java.lang.Class#getResourceAsStream(String)}
+     * @return Une icône représentant l'image qui peut subir une rotation
+     */
     private RotatableImageIcon loadIconResource(String url) {
         BufferedImage image;
 
@@ -108,23 +127,26 @@ public class ViewController extends JFrame implements Observer {
     private void initGraphics() {
         setTitle("Roguelike");
         setSize(WINDOW_SIZE_X, WINDOW_SIZE_Y);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // On crée les grilles
         int itemCount = itemSupplier.count();
-        viewGrid = new JLabel[GRID_SIZE_X][GRID_SIZE_Y];
         inventoryGrid = new JLabel[2][itemCount];
+        viewGrid = new JLabel[GRID_SIZE_X][GRID_SIZE_Y];
 
-        JComponent root = new JPanel();
-        JComponent tempGrid = new JPanel(new GridLayout(GRID_SIZE_Y, GRID_SIZE_X)); // tempGrid va contenir les cases graphiques et les positionner sous la forme d'une grille
+        // On crée les composants
+        JComponent tempGrid = new JPanel(new GridLayout(GRID_SIZE_Y, GRID_SIZE_X));
         inventoryDisplay = new JPanel(new GridLayout(itemCount, 2));
 
+        // On initialise les cases de jeu...
         for (int y = 0; y < GRID_SIZE_Y; y++) {
             for (int x = 0; x < GRID_SIZE_X; x++) {
                 JLabel jl = new JLabel();
-                viewGrid[x][y] = jl; // on conserve les cases graphiques dans tabJLabel pour avoir un accès pratique à celles-ci (voir mettreAJourAffichage() )
+                viewGrid[x][y] = jl;
                 tempGrid.add(jl);
             }
         }
+        // ...ainsi que les cases de l'inventaire...
         for (int y = 0; y < itemCount; y++) {
             for (int x = 0; x < 2; x++) {
                 JLabel jl = new JLabel();
@@ -132,31 +154,31 @@ public class ViewController extends JFrame implements Observer {
                 inventoryDisplay.add(jl);
             }
         }
+        // ...ce qui est nécessaire pour pouvoir en modifier l'affichage plus tard, grâce aux variables de classe respectives
 
-        ((FlowLayout) root.getLayout()).setAlignment(FlowLayout.LEFT);
+        // On souhaite que l'inventaire se place horizontalement après la grille de jeu, et que chaque élément soit justifié à gauche
+        ((FlowLayout) getLayout()).setAlignment(FlowLayout.LEFT);
+        // Taille de la grille de jeu : 3/4 de la fenêtre en largeur
         tempGrid.setBounds(0, 0, Double.valueOf(getWidth() * 0.75).intValue(), getHeight());
-        root.add(tempGrid);
+        // Taille de l'inventaire : 1/4 de la fenêtre en largeur, invisible par défaut
         inventoryDisplay.setVisible(false);
         inventoryDisplay.setBounds(Double.valueOf(getWidth() * 0.75).intValue() + 1, 0, Double.valueOf(getWidth() * 0.25).intValue(), getHeight());
-        root.add(inventoryDisplay);
-        add(root);
+        add(tempGrid);
+        add(inventoryDisplay);
     }
 
-
-    /**
-     * Il y a une grille du côté du modèle ( jeu.getGrille() ) et une grille du côté de la vue (tabJLabel)
-     */
-    private void updateDisplay() {
-
+    @Override
+    public void update(Observable o, Object arg) {
         for (int x = 0; x < GRID_SIZE_X; x++) {
             for (int y = 0; y < GRID_SIZE_Y; y++) {
                 StaticEntity e = game.currentRoom().getStatic(x, y);
                 if (e instanceof Wall) {
                     viewGrid[x][y].setIcon(wall);
                 } else if (e instanceof SingleUsageSlot) {
-                    viewGrid[x][y].setIcon(((SingleUsageSlot) e).isUsed() ? fire : singleUse);
+                    viewGrid[x][y].setIcon(((SingleUsageSlot) e).isUsable() ? singleUse : fire);
                 } else if (e instanceof NormalSlot) {
                     NormalSlot cn = (NormalSlot) e;
+                    // Soit la case a l'icône blanche de base (pas d'objet), soit l'icône de l'objet
                     viewGrid[x][y].setIcon(cn.item == null || cn.item instanceof NoItem ? normalSlot : itemIcons.get(cn.item.getClass()));
                 } else if (e instanceof Door) {
                     viewGrid[x][y].setIcon(door);
@@ -166,27 +188,19 @@ public class ViewController extends JFrame implements Observer {
             }
         }
 
+        // On applique la rotation au joueur
         player.rotate(game.getPlayer().getOrientation().getRadians());
         viewGrid[game.getPlayer().getPosition().x][game.getPlayer().getPosition().y].setIcon(player);
 
+        // Si l'inventaire est visible on le met à jour
         if (inventoryDisplay.isVisible())
             updateInventoryDisplay(game.getPlayer().getInventory());
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        updateDisplay();
-        /*
-        SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        mettreAJourAffichage();
-                    }
-                }); 
-        */
-
-    }
-
+    /**
+     * Met à jour l'affichage de l'inventaire.
+     * @param inv Inventaire à afficher
+     */
     private void updateInventoryDisplay(Inventory inv) {
         int i = 0;
         for (Class<? extends Item> itemType : itemSupplier.baseList()) {
