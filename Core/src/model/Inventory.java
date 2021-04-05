@@ -1,9 +1,10 @@
-package model.board;
+package model;
 
 import model.board.items.Item;
 import util.Util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -59,8 +60,8 @@ public class Inventory {
      * Ajoute un objet à l'inventaire
      * @param item Objet à ajouter
      */
-    public void add(Item item) {
-        items.add(item);
+    public void add(Item... item) {
+        items.addAll(Arrays.asList(item));
     }
 
     /**
@@ -85,7 +86,7 @@ public class Inventory {
      * Retire tous les objets d'un type demandé de l'inventaire
      * @param type Type à retirer, par exemple "WaterCap.class"
      */
-    public void remomoveAllOf(Class<? extends Item> type) {
+    public void removeAllOf(Class<? extends Item> type) {
         items.removeIf(obj -> obj.getClass().equals(type));
     }
 

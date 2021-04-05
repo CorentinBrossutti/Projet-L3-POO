@@ -1,10 +1,11 @@
-package model.board.statics;
+package base.model.board.statics;
 
-import model.board.Player;
-import model.board.Room;
+import model.Player;
+import model.Room;
 import model.board.items.Item;
 import model.board.items.NoItem;
 import model.board.items.Pickable;
+import model.board.statics.StaticEntity;
 
 /**
  * Une case normale

@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="old">
+    <output-path>$PROJECT_DIR$/out/artifacts/old</output-path>
+    <root id="archive" name="old.jar">
+      <element id="module-output" name="Core" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

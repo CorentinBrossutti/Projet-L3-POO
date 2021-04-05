@@ -1,8 +1,9 @@
-package model.board.statics;
+package base.model.board.statics;
 
-import model.board.Player;
-import model.board.Room;
-import model.board.items.Key;
+import model.Player;
+import model.Room;
+import model.board.statics.Lockable;
+import model.board.statics.StaticEntity;
 
 /**
  * Une porte, verrouillable
@@ -20,8 +21,13 @@ public class Door extends StaticEntity implements Lockable {
     }
 
     @Override
-    public void unlock(Key key) {
+    public void unlock() {
         locked = false;
+    }
+
+    @Override
+    public void lock() {
+        locked = true;
     }
 
     @Override

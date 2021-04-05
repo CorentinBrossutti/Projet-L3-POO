@@ -1,7 +1,7 @@
 package model.board.statics;
 
-import model.board.Player;
-import model.board.Room;
+import model.Player;
+import model.Room;
 import model.board.items.Item;
 
 /**
@@ -24,6 +24,12 @@ public abstract class StaticEntity {
      */
     public abstract boolean collide(Player character);
 
+    /**
+     * Méthode exécutée lorsque le joueur entre sur la case
+     * @param character Le joueur
+     */
+    public void enter(Player character){
+    }
     /**
      * Méthode exécutée lorsque le joueur quitte la case
      * @param character Joueur

@@ -1,9 +1,9 @@
-package model.board.statics;
+package base.model.board.statics;
 
-import model.board.Player;
-import model.board.Room;
+import model.Player;
+import model.Room;
 import model.board.items.Item;
-import model.board.items.WaterCap;
+import base.model.board.items.WaterCap;
 
 /**
  * Une case à usage unique, qui devient inutilisable lorsqu'un joueur passe dessus (après l'avoir quittée)

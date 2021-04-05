@@ -3,25 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model.board;
+package model;
 
+import meta.Main;
+import meta.Plugin;
 import model.board.items.Item;
 import model.board.statics.StaticEntity;
-import model.board.statics.Wall;
 import util.Position;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Héros du jeu
  */
 public class Player {
-    private final Game game;
-    private final Inventory inventory = new Inventory();
+    public final Game game;
+    public final Inventory inventory = new Inventory();
     /**
      * Contrôle les mouvements et interactions du joueur
      */
-    private final Controller controller = new Controller();
-    private Position position;
-    private Orientation orientation;
+    protected final Map<String, PlayerController> controllers = new HashMap<>();
+    protected Position position;
+    protected Orientation orientation = Orientation.RIGHT;
 
     public Player(Game game, int x, int y) {
         this(game, new Position(x, y));
@@ -30,8 +34,8 @@ public class Player {
     public Player(Game game, Position position) {
         this.game = game;
         this.position = position;
-        // Orientation à droite par défaut
-        this.orientation = Orientation.RIGHT;
+
+        controllers.put("core", new CoreController(this));
     }
 
     public Position getPosition() {
@@ -42,12 +46,20 @@ public class Player {
         this.position = pos;
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public PlayerController getController(String plugin) {
+        return controllers.get(plugin);
     }
 
-    public Controller getController() {
-        return controller;
+    public <T extends PlayerController> T getController(String plugin, Class<T> dummy){
+        return (T) getController(plugin);
+    }
+
+    public CoreController getCoreController(){
+        return (CoreController) getController("core");
+    }
+
+    public void addController(String controllerName, PlayerController controller){
+        controllers.put(controllerName, controller);
     }
 
     public Orientation getOrientation() {
@@ -58,8 +70,8 @@ public class Player {
         this.orientation = orientation;
     }
 
-    public void setPosition(int x, int y) {
-        setPosition(new Position(x, y));
+    public Room room(){
+        return game.currentRoom();
     }
 
     /**
@@ -99,6 +111,19 @@ public class Player {
 
         /**
          *
+         * @return L'orientation opposée à celle actuelle
+         */
+        public Orientation opposite(){
+            return switch (this) {
+                case UP -> DOWN;
+                case DOWN -> UP;
+                case LEFT -> RIGHT;
+                case RIGHT -> LEFT;
+            };
+        }
+
+        /**
+         *
          * @param pos Position de départ
          * @return La position suivante en fonction de l'orientation
          */
@@ -122,58 +147,60 @@ public class Player {
         }
     }
 
-    /**
-     * Classe contrôlant le mouvement du joueur
-     */
-    public class Controller {
+    public static class CoreController extends PlayerController{
+        public CoreController(Player player) {
+            super(player);
+        }
+
         /**
          * Tente de faire avancer le joueur d'une case
+         *
          * @param direction Direction du mouvement, définira aussi l'orientation du joueur
          */
-        public void move(Orientation direction) {
-            Position pos = direction.getNextPos(position);
-            if (!game.currentRoom().getStatic(pos).collide(Player.this)) {
+        public void move(Player.Orientation direction) {
+            Position pos = direction.getNextPos(player.getPosition());
+            StaticEntity se = player.room().getStatic(pos);
+
+            if (!se.collide(player)) {
+                for (Plugin p : Main.plugins){
+                    if(!p.events.playerMoves(player, player.getPosition(), pos, direction))
+                        return;
+                }
                 // On obtient la case actuelle et on éxécute l'événement pour la quitter
-                game.currentRoom().getStatic(position).leave(Player.this);
-                setPosition(pos);
+                player.room().getStatic(player.getPosition()).leave(player);
+                player.setPosition(pos);
+                se.enter(player);
             }
-            setOrientation(direction);
+            player.setOrientation(direction);
         }
 
         /**
          * Tente de faire utiliser un objet au joueur sur la case qu'il regarde, et le retire de son inventaire.
+         *
          * @param item L'objet à utiliser
          */
         public void use(Item item) {
-            if (game.currentRoom().getStatic(orientation.getNextPos(position)).use(Player.this, item))
-                inventory.remove(item);
+            StaticEntity target = player.room().getStatic(player.getOrientation().getNextPos(player.getPosition()));
+            for(Plugin p : Main.plugins){
+                if(!p.events.playerUses(player, target, item))
+                    return;
+            }
+            if (target.use(player, item))
+                player.inventory.remove(item);
         }
 
         /**
          * Tente de faire utiliser un certain type d'objet au joueur sur la case qu'il regarde.
          * Nécessite que le joueur ait au moins un exemplaire du type d'objet dans son inventaire, et lui retire après utilisation.
+         *
          * @param type Type d'objet à utiliser
          */
         public void use(Class<? extends Item> type) {
-            if (!inventory.has(type))
+            if (!player.inventory.has(type))
                 return;
 
-            Item item = inventory.firstOf(type);
-            if (game.currentRoom().getStatic(orientation.getNextPos(position)).use(Player.this, item))
-                inventory.remove(item);
-        }
-
-        /**
-         * Tente de faire sauter le joueur deux cases plus loin
-         */
-        public void jump() {
-            Position target = orientation.getNextPos(position, 2);
-            StaticEntity from = game.currentRoom().getStatic(orientation.getNextPos(position)),
-                    to = game.currentRoom().getStatic(target);
-            if (!(from instanceof Wall) && !to.collide(Player.this)) {
-                from.leave(Player.this);
-                setPosition(target);
-            }
+            use(player.inventory.firstOf(type));
         }
     }
+
 }

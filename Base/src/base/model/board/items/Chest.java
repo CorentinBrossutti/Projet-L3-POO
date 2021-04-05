@@ -1,35 +1,34 @@
-package model.board.items;
+package base.model.board.items;
 
-import model.board.Gen;
-import model.board.Inventory;
-import model.board.Player;
+import model.Game;
+import model.Inventory;
+import model.Player;
+import model.board.items.ItemContainer;
+import model.board.items.Pickable;
 
 /**
  * Un coffre. Lorsque le joueur passe dessus, son contenu est ramassé directement dans l'inventaire du joueur.
  */
-public class Chest extends Item implements Pickable {
+public class Chest extends ItemContainer implements Pickable {
     /**
      * Taille par défaut de l'inventaire du coffre, certains emplacements peuvent ne rien contenir
      */
     public static final int CHEST_INVENTORY_SIZE = 10;
 
-    /**
-     * Inventaire du coffre
-     */
-    private final Inventory inventory = new Inventory();
-
-    public Chest() {
-        this(true);
+    public Chest(Game.Gen gen) {
+        this(gen, true);
     }
 
     /**
      * Constructeur, génère potentiellement un contenu aléatoire
-     * @param gen Générer aléatoirement un contenu pour le coffre
+     * @param fill Générer aléatoirement un contenu pour le coffre si vrai
      */
-    public Chest(boolean gen) {
-        if (gen) {
+    public Chest(Game.Gen gen, boolean fill) {
+        super(gen);
+
+        if (fill) {
             for (int i = 0; i < CHEST_INVENTORY_SIZE; i++)
-                inventory.add(Gen.pickItem());
+                inventory.add(gen.pickItem());
         }
     }
 
@@ -39,6 +38,6 @@ public class Chest extends Item implements Pickable {
 
     @Override
     public void pickup(Player picker) {
-        inventory.into(picker.getInventory());
+        inventory.into(picker.inventory);
     }
 }

@@ -1,7 +1,8 @@
-package model.board.statics;
+package base.model.board.statics;
 
-import model.board.Player;
-import model.board.Room;
+import model.Player;
+import model.Room;
+import model.board.statics.StaticEntity;
 
 /**
  * Un trou dans le sol
