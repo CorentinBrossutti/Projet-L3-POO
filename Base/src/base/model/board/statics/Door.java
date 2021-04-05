@@ -2,8 +2,8 @@ package base.model.board.statics;
 
 import model.Player;
 import model.Room;
-import model.board.statics.Usable;
 import model.board.statics.StaticEntity;
+import model.board.statics.Usable;
 
 /**
  * Une porte, verrouillable

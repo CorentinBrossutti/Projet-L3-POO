@@ -1,8 +1,10 @@
 package base;
 
-import meta.ViewController;
-import base.model.board.items.*;
+import base.model.board.items.Chest;
+import base.model.board.items.Key;
+import base.model.board.items.WaterCap;
 import base.model.board.statics.*;
+import meta.ViewController;
 import model.Game;
 import model.board.items.Item;
 import model.board.items.NoItem;
@@ -57,7 +59,7 @@ public class BaseViewController extends ViewController {
         handle.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_C)
+                if (e.getKeyCode() == KeyEvent.VK_C)
                     game.getPlayer().getCoreController().use(WaterCap.class);
             }
         });
@@ -68,7 +70,7 @@ public class BaseViewController extends ViewController {
         for (short x = 0; x < ViewControllerHandle.GRID_SIZE_X; x++) {
             for (short y = 0; y < ViewControllerHandle.GRID_SIZE_Y; y++) {
                 StaticEntity e = game.currentRoom().getStatic(x, y);
-                if(e instanceof SingleUsageSlot)
+                if (e instanceof SingleUsageSlot)
                     handle.viewGrid[x][y].setIcon(((SingleUsageSlot) e).usable() ? staticIcons.get(SingleUsageSlot.class) : fire);
                 else if (e instanceof NormalSlot) {
                     NormalSlot cn = (NormalSlot) e;
@@ -77,8 +79,7 @@ public class BaseViewController extends ViewController {
                             cn.item == null || cn.item instanceof NoItem ?
                                     staticIcons.get(NormalSlot.class) :
                                     itemIcons.get(cn.item.getClass()));
-                }
-                else
+                } else
                     handle.viewGrid[x][y].setIcon(staticIcons.get(e.getClass()));
             }
         }

@@ -1,8 +1,10 @@
 package base;
 
-import meta.Plugin;
-import base.model.board.items.*;
+import base.model.board.items.Chest;
+import base.model.board.items.Key;
+import base.model.board.items.WaterCap;
 import base.model.board.statics.*;
+import meta.Plugin;
 import model.Game;
 import model.Player;
 import model.Room;
@@ -30,13 +32,12 @@ public class PluginBase extends Plugin {
 
         model = new BaseModel();
         viewController = new BaseViewController(handle, game);
-        events = ((BaseModel)model).new BaseEvents();
+        events = ((BaseModel) model).new BaseEvents();
     }
 
 
-
-    public class BaseModel extends Model{
-        public BaseModel(){
+    public class BaseModel extends Model {
+        public BaseModel() {
             itemSupplier = new WeightedRandomSupplier<>() {
                 @Override
                 public Map<Class<? extends Item>, Integer> supplyWeights() {
@@ -95,7 +96,7 @@ public class PluginBase extends Plugin {
                         // On y ajoute un objet aléatoire (ou pas, si la fonction de sélection retourne NoItem)
                         ((NormalSlot) temp).item = game.gen.pickItem();
                         // Si la position de départ n'est pas encore valide, alors c'est celle-ci (première case valide)
-                        if (room.start.x < 0 || room.start.y < 0){
+                        if (room.start.x < 0 || room.start.y < 0) {
                             room.start.x = x;
                             room.start.y = y;
                         }
@@ -124,7 +125,7 @@ public class PluginBase extends Plugin {
             }
         }
 
-        public class BaseEvents extends Events{
+        public class BaseEvents extends Events {
             @Override
             public void playerChangesRoom(Player player, Room previous, Room next) {
                 // On réinitialise les capsules d'eau du joueur

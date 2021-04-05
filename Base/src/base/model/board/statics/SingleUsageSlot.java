@@ -1,9 +1,9 @@
 package base.model.board.statics;
 
+import base.model.board.items.WaterCap;
 import model.Player;
 import model.Room;
 import model.board.items.Item;
-import base.model.board.items.WaterCap;
 import model.board.statics.Usable;
 
 /**

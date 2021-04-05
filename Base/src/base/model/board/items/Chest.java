@@ -20,6 +20,7 @@ public class Chest extends ItemContainer implements Pickable {
 
     /**
      * Constructeur, génère potentiellement un contenu aléatoire
+     *
      * @param fill Générer aléatoirement un contenu pour le coffre si vrai
      */
     public Chest(Game.Gen gen, boolean fill) {
