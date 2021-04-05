@@ -16,11 +16,14 @@ import view.ViewControllerHandle;
 import java.util.Map;
 import java.util.Random;
 
+import static model.Room.SIZE_X;
+import static model.Room.SIZE_Y;
+
 public class PluginBase extends Plugin {
     /**
      * Le nombre de capsules lorsque l'on rentre dans une salle
      */
-    public static int WCAP_COUNT = 1;
+    public static byte WCAP_COUNT = 1;
 
     public PluginBase(Game game, ViewControllerHandle handle) {
         super(game, handle, "Base");
@@ -33,10 +36,8 @@ public class PluginBase extends Plugin {
 
 
     public class BaseModel extends Model{
-        public static final int SIZE_X = 30, SIZE_Y = 15;
-
         public BaseModel(){
-            itemSupplier = new WeightedRandomSupplier<Item>() {
+            itemSupplier = new WeightedRandomSupplier<>() {
                 @Override
                 public Map<Class<? extends Item>, Integer> supplyWeights() {
                     return Map.of(
@@ -48,7 +49,7 @@ public class PluginBase extends Plugin {
                 }
             };
 
-            staticSupplier = new WeightedRandomSupplier<StaticEntity>() {
+            staticSupplier = new WeightedRandomSupplier<>() {
                 @Override
                 public Map<Class<? extends StaticEntity>, Integer> supplyWeights() {
                     return Map.of(
@@ -68,21 +69,21 @@ public class PluginBase extends Plugin {
                 room.addStatic(new NormalSlot(room), room.start);
 
             // Murs extérieurs horizontaux
-            for (int x = 0; x < SIZE_X; x++) {
+            for (short x = 0; x < SIZE_X; x++) {
                 room.addStatic(new Wall(room), x, 0);
                 room.addStatic(new Wall(room), x, SIZE_Y - 1);
             }
 
             // Murs extérieurs verticaux
-            for (int y = 1; y < SIZE_Y; y++) {
+            for (short y = 1; y < SIZE_Y; y++) {
                 room.addStatic(new Wall(room), 0, y);
                 room.addStatic(new Wall(room), SIZE_X - 1, y);
             }
 
             // Placement aléatoire d'entités statiques
             StaticEntity temp;
-            for (int x = 1; x < SIZE_X - 1; x++) {
-                for (int y = 1; y < SIZE_Y - 1; y++) {
+            for (short x = 1; x < SIZE_X - 1; x++) {
+                for (short y = 1; y < SIZE_Y - 1; y++) {
                     // Si on traite actuellement la case de départ, on l'ignore (traitée plus haut)
                     if (room.start.x == x && room.start.y == y)
                         continue;
@@ -126,6 +127,7 @@ public class PluginBase extends Plugin {
         public class BaseEvents extends Events{
             @Override
             public void playerChangesRoom(Player player, Room previous, Room next) {
+                // On réinitialise les capsules d'eau du joueur
                 player.inventory.removeAllOf(WaterCap.class);
                 player.inventory.add(WaterCap.class, WCAP_COUNT);
             }

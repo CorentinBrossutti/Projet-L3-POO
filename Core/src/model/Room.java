@@ -9,11 +9,11 @@ import util.Util;
  * Une salle
  */
 public class Room {
-    public static final int SIZE_X = 30;
-    public static final int SIZE_Y = 15;
+    public static final short SIZE_X = 30, SIZE_Y = 15;
+
+    public final Position start, exit;
 
     private final StaticEntity[][] grid = new StaticEntity[SIZE_X][SIZE_Y];
-    public final Position start, exit;
     /**
      * Est-ce que la salle est terminée (sortie atteinte) ?
      */

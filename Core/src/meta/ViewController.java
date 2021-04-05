@@ -3,7 +3,13 @@ package meta;
 import model.Game;
 import view.ViewControllerHandle;
 
+/**
+ * Une classe permettant de gérer les événements liées au graphisme du jeu.
+ */
 public abstract class ViewController {
+    /**
+     * La JFrame du jeu
+     */
     protected ViewControllerHandle handle;
     protected Game game;
 
@@ -30,6 +36,9 @@ public abstract class ViewController {
     public void update() {
     }
 
+    /**
+     * Un contrôleur vide pour les plugins qui ne s'en servent pas
+     */
     public static class DummyViewController extends ViewController{
         public DummyViewController(ViewControllerHandle handle, Game game) {
             super(handle, game);

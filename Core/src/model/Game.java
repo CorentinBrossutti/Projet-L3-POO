@@ -17,21 +17,17 @@ import java.util.*;
 
 public class Game extends Observable implements Runnable {
     /**
-     * Valeur de tick, délai de rafraîchissement
+     * Valeur de tick, délai de rafraîchissement (ms)
      */
-    public static final int PAUSE = 50;
+    public static final short PAUSE = 50;
     /**
      * Nombre de salles à franchir pour gagner
      */
-    public static final int ROOM_COUNT = 3;
-    /**
-     * Le nombre de capsules lorsque l'on rentre dans une salle
-     */
-    public static int WCAP_COUNT = 1;
+    public static final byte ROOM_COUNT = 3;
 
 
     public Gen gen;
-    private Player player;
+    protected Player player;
     /**
      * Grille des salles
      */
@@ -39,7 +35,7 @@ public class Game extends Observable implements Runnable {
     /**
      * Indice de salle actuelle dans le tableau
      */
-    private int currentRoomIndex;
+    private byte currentRoomIndex;
 
     public Game() {
     }
@@ -48,25 +44,37 @@ public class Game extends Observable implements Runnable {
         return player;
     }
 
+    /**
+     *
+     * @return La salle actuelle
+     */
     public Room currentRoom() {
         return rooms[currentRoomIndex];
     }
 
+    /**
+     * Initialisation précoce du jeu
+     */
     public void init(){
         gen = new Gen();
     }
 
+    /**
+     * Démarrage du jeu
+     */
     public void start(){
-        ClassLoader ct = getClass().getClassLoader();
-
         // On génère les salles
         for (int i = 0; i < ROOM_COUNT; i++) {
             // Si l'on traite la première salle, alors la position sera (-1, -1) et donc choisi aléatoirement à la génération de la salle.
             // Sinon, la position de départ de la salle actuelle correspondra à la position à côté de la porte dans la salle précédente.
             Position spos = gen.getSlotNextToDoor(i == 0 ? new Position(-1, -1) : rooms[i - 1].exit);
+            // Similairement, la dernière salle n'a pas de porte, pour l'instant...
+            // TODO jeu gagné
             rooms[i] = new Room(spos, new Position(-1, -1), i == ROOM_COUNT - 1);
         }
+        // On crée le joueur, sa positio est celle de départ de la première salle
         player = new Player(this, rooms[0].start);
+        // On assigne les contrôleurs de plugin
         Main.plugins.forEach(
                 plugin -> player.addController(plugin.name, plugin.model.customController(player))
         );
@@ -79,6 +87,7 @@ public class Game extends Observable implements Runnable {
 
     public void run() {
         while (true) {
+            // Tick des plugins
             Main.plugins.forEach(Plugin::tick);
 
             setChanged();
@@ -91,8 +100,9 @@ public class Game extends Observable implements Runnable {
                 );
                 currentRoomIndex++;
                 // On change la position du joueur pour celle de départ de la salle
-                player.setPosition(currentRoom().start);
-                player.setOrientation(player.getOrientation().opposite());
+                player.position = currentRoom().start;
+                // Et son orientation (pour qu'il ne regarde pas le mur)
+                player.orientation = player.orientation.opposite();
             }
 
             try {
@@ -105,28 +115,45 @@ public class Game extends Observable implements Runnable {
 
     /**
      * Classe utilitaire de génération aléatoire pour les entités statiques et les objets.
-     * Cette classe ne s'instancie pas et s'utilise de façon statique.
      */
-    public final class Gen {
+    public class Gen {
         private final Random rand = new Random();
 
+        /**
+         * Liste à poids des entités statiques.
+         * Prendre un élément aléatoire reviendra à utiliser le système de poids.
+         */
         public final List<Class<? extends StaticEntity>> staticPicker = new ArrayList<>();
+        /**
+         * Liste à poids des objets.
+         * Prendre un élément aléatoire reviendra à utiliser le système de poids.
+         */
         public final List<Class<? extends Item>> itemPicker = new ArrayList<>();
 
-        public final short itemDistinctCount, staticDistinctCount;
+        /**
+         * Le nombre d'objets distincts (poids non pris en compte)
+         */
+        public final short itemDistinctCount;
+        /**
+         * Le nombre d'entités statiques distinctes (poids non pris en compte)
+         */
+        public final short staticDistinctCount;
 
+        /**
+         * La liste des entités statiques distinctes générables, poids non pris en compte
+         */
         public final Set<Class<? extends StaticEntity>> baseStatics = new HashSet<>();
+        /**
+         * La liste des objets distincts générables, poids non pris en compte
+         */
         public final Set<Class<? extends Item>> baseItems = new HashSet<>();
 
         private Gen(){
+            // Pour chaque plugin, on obtient et on fusionne les objets et entités statiques qu'il souhaite pouvoir générer
             Main.plugins.forEach(
                     plugin -> {
                         staticPicker.addAll(plugin.model.staticSupplier.supply());
                         baseStatics.addAll(plugin.model.staticSupplier.baseList());
-                    }
-            );
-            Main.plugins.forEach(
-                    plugin -> {
                         itemPicker.addAll(plugin.model.itemSupplier.supply());
                         baseItems.addAll(plugin.model.itemSupplier.baseList());
                     }

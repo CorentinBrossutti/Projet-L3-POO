@@ -1,7 +1,6 @@
 package base.model.board.items;
 
 import model.Game;
-import model.Inventory;
 import model.Player;
 import model.board.items.ItemContainer;
 import model.board.items.Pickable;
@@ -13,7 +12,7 @@ public class Chest extends ItemContainer implements Pickable {
     /**
      * Taille par défaut de l'inventaire du coffre, certains emplacements peuvent ne rien contenir
      */
-    public static final int CHEST_INVENTORY_SIZE = 10;
+    public static final byte CHEST_INVENTORY_SIZE = 10;
 
     public Chest(Game.Gen gen) {
         this(gen, true);
@@ -27,13 +26,9 @@ public class Chest extends ItemContainer implements Pickable {
         super(gen);
 
         if (fill) {
-            for (int i = 0; i < CHEST_INVENTORY_SIZE; i++)
+            for (byte i = 0; i < CHEST_INVENTORY_SIZE; i++)
                 inventory.add(gen.pickItem());
         }
-    }
-
-    public Inventory getInventory() {
-        return inventory;
     }
 
     @Override

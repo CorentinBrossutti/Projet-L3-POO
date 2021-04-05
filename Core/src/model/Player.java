@@ -19,13 +19,23 @@ import java.util.Map;
  */
 public class Player {
     public final Game game;
+    /**
+     * L'inventaire du joueur
+     */
     public final Inventory inventory = new Inventory();
     /**
-     * Contrôle les mouvements et interactions du joueur
+     * La position du joueur
+     */
+    public Position position;
+    /**
+     * L'orientation du joueur (de sa vue)
+     */
+    public Orientation orientation = Orientation.RIGHT;
+    /**
+     * Contrôlent les mouvements et interactions du joueur.
+     * En clé, le nom du plugin lié, en valeur le contrôleur.
      */
     protected final Map<String, PlayerController> controllers = new HashMap<>();
-    protected Position position;
-    protected Orientation orientation = Orientation.RIGHT;
 
     public Player(Game game, int x, int y) {
         this(game, new Position(x, y));
@@ -35,41 +45,51 @@ public class Player {
         this.game = game;
         this.position = position;
 
+        // Ajout du contrôleur base
         controllers.put("core", new CoreController(this));
     }
 
-    public Position getPosition() {
-        return position;
+    /**
+     *
+     * @param handle Le nom du contrôleur, fréquemment le nom du plugin qui le possède
+     * @return Le contrôleur lié
+     */
+    public <T extends PlayerController> T getController(String handle) {
+        return (T) controllers.get(handle);
     }
 
-    public void setPosition(Position pos) {
-        this.position = pos;
-    }
-
-    public PlayerController getController(String plugin) {
-        return controllers.get(plugin);
-    }
-
+    /**
+     * Evite un cast en passant par un générique
+     * @param plugin Le nom du contrôleur, fréquemment le nom du plugin qui le possède
+     * @param dummy Classe du contrôleur que l'on cherche à obtenir, évite un cast via un générique
+     * @param <T> Générique
+     * @return Le contrôleur lié
+     */
     public <T extends PlayerController> T getController(String plugin, Class<T> dummy){
-        return (T) getController(plugin);
+        return getController(plugin);
     }
 
+    /**
+     *
+     * @return Le contrôleur basique du joueur "core"
+     */
     public CoreController getCoreController(){
-        return (CoreController) getController("core");
+        return getController("core");
     }
 
-    public void addController(String controllerName, PlayerController controller){
-        controllers.put(controllerName, controller);
+    /**
+     * Si un contrôleur existe avec la même clé, c'est ignoré
+     * @param handle La clé, nom du contrôleur
+     * @param controller Le contrôleur
+     */
+    public void addController(String handle, PlayerController controller){
+        controllers.putIfAbsent(handle, controller);
     }
 
-    public Orientation getOrientation() {
-        return orientation;
-    }
-
-    public void setOrientation(Orientation orientation) {
-        this.orientation = orientation;
-    }
-
+    /**
+     *
+     * @return La salle actuelle du joueur
+     */
     public Room room(){
         return game.currentRoom();
     }
@@ -87,26 +107,15 @@ public class Player {
         /**
          * Rotation en degrés
          */
-        private final double rotation;
-
-        Orientation(double rotation) {
-            this.rotation = rotation;
-        }
-
+        public final double degrees;
         /**
-         *
-         * @return Rotation en degrés liée à l'orientation
+         * Rotation en radians
          */
-        public double getDegrees() {
-            return rotation;
-        }
+        public final double radians;
 
-        /**
-         *
-         * @return Rotation en radians liée à l'orientation
-         */
-        public double getRadians() {
-            return Math.toRadians(rotation);
+        Orientation(double degrees) {
+            this.degrees = degrees;
+            this.radians = Math.toRadians(degrees);
         }
 
         /**
@@ -147,6 +156,9 @@ public class Player {
         }
     }
 
+    /**
+     * Classe "core" pour les mouvements de base du joueur
+     */
     public static class CoreController extends PlayerController{
         public CoreController(Player player) {
             super(player);
@@ -158,20 +170,20 @@ public class Player {
          * @param direction Direction du mouvement, définira aussi l'orientation du joueur
          */
         public void move(Player.Orientation direction) {
-            Position pos = direction.getNextPos(player.getPosition());
+            Position pos = direction.getNextPos(player.position);
             StaticEntity se = player.room().getStatic(pos);
 
             if (!se.collide(player)) {
                 for (Plugin p : Main.plugins){
-                    if(!p.events.playerMoves(player, player.getPosition(), pos, direction))
+                    if(!p.events.playerMoves(player, player.position, pos, direction))
                         return;
                 }
                 // On obtient la case actuelle et on éxécute l'événement pour la quitter
-                player.room().getStatic(player.getPosition()).leave(player);
-                player.setPosition(pos);
+                player.room().getStatic(player.position).leave(player);
+                player.position = pos;
                 se.enter(player);
             }
-            player.setOrientation(direction);
+            player.orientation = direction;
         }
 
         /**
@@ -180,7 +192,7 @@ public class Player {
          * @param item L'objet à utiliser
          */
         public void use(Item item) {
-            StaticEntity target = player.room().getStatic(player.getOrientation().getNextPos(player.getPosition()));
+            StaticEntity target = player.room().getStatic(player.orientation.getNextPos(player.position));
             for(Plugin p : Main.plugins){
                 if(!p.events.playerUses(player, target, item))
                     return;

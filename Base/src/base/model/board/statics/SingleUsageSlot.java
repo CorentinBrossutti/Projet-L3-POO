@@ -4,11 +4,12 @@ import model.Player;
 import model.Room;
 import model.board.items.Item;
 import base.model.board.items.WaterCap;
+import model.board.statics.Usable;
 
 /**
  * Une case à usage unique, qui devient inutilisable lorsqu'un joueur passe dessus (après l'avoir quittée)
  */
-public class SingleUsageSlot extends NormalSlot {
+public class SingleUsageSlot extends NormalSlot implements Usable {
     /**
      * Usable = false si la case est utilisée (ne peut pas passer dessus)
      * Vrai sinon
@@ -19,8 +20,14 @@ public class SingleUsageSlot extends NormalSlot {
         super(_room);
     }
 
-    public boolean isUsable() {
+    @Override
+    public boolean usable() {
         return usable;
+    }
+
+    @Override
+    public void mark(boolean usable) {
+        this.usable = usable;
     }
 
     @Override

@@ -22,12 +22,15 @@ public class NormalSlot extends StaticEntity {
 
     @Override
     public boolean collide(Player character) {
+        return false;
+    }
+
+    @Override
+    public void enter(Player character) {
         // S'il y a un objet ramassable sur cette case, il est ramassé dès que le joueur passe dessus
         if (item instanceof Pickable) {
             ((Pickable) item).pickup(character);
             item = new NoItem();
         }
-
-        return false;
     }
 }

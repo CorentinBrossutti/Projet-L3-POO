@@ -2,13 +2,13 @@ package base.model.board.statics;
 
 import model.Player;
 import model.Room;
-import model.board.statics.Lockable;
+import model.board.statics.Usable;
 import model.board.statics.StaticEntity;
 
 /**
  * Une porte, verrouillable
  */
-public class Door extends StaticEntity implements Lockable {
+public class Door extends StaticEntity implements Usable {
     protected boolean locked;
 
     public Door(Room _room) {
@@ -16,27 +16,24 @@ public class Door extends StaticEntity implements Lockable {
     }
 
     @Override
-    public boolean isLocked() {
+    public boolean usable() {
         return locked;
     }
 
     @Override
-    public void unlock() {
-        locked = false;
-    }
-
-    @Override
-    public void lock() {
-        locked = true;
+    public void mark(boolean usable) {
+        locked = usable;
     }
 
     @Override
     public boolean collide(Player character) {
         // Si la porte est verrouillée, alors il y a collision
-        if (locked)
-            return true;
-        // Sinon on quitte la pièce
+        return locked;
+    }
+
+    @Override
+    public void enter(Player character) {
+        // Si la porte est empruntée, on quitte la pièce
         room.terminate();
-        return false;
     }
 }

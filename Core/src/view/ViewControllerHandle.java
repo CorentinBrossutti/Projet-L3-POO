@@ -26,7 +26,7 @@ import static util.Util.Images.loadIconResource;
  * (2) Controleur : écouter les évènements clavier et déclencher le traitement adapté sur le modèle (flèches direction, etc.))
  */
 public class ViewControllerHandle extends JFrame implements Observer {
-    public static final int
+    public static final short
             GRID_SIZE_X = Room.SIZE_X,
             GRID_SIZE_Y = Room.SIZE_Y,
             WINDOW_SIZE_X = 620,
@@ -90,16 +90,16 @@ public class ViewControllerHandle extends JFrame implements Observer {
         inventoryDisplay = new JPanel(new GridLayout(itemCount, 2));
 
         // On initialise les cases de jeu...
-        for (int y = 0; y < GRID_SIZE_Y; y++) {
-            for (int x = 0; x < GRID_SIZE_X; x++) {
+        for (short y = 0; y < GRID_SIZE_Y; y++) {
+            for (short x = 0; x < GRID_SIZE_X; x++) {
                 JLabel jl = new JLabel();
                 viewGrid[x][y] = jl;
                 tempGrid.add(jl);
             }
         }
         // ...ainsi que les cases de l'inventaire...
-        for (int y = 0; y < itemCount; y++) {
-            for (int x = 0; x < 2; x++) {
+        for (short y = 0; y < itemCount; y++) {
+            for (short x = 0; x < 2; x++) {
                 JLabel jl = new JLabel();
                 inventoryGrid[x][y] = jl;
                 inventoryDisplay.add(jl);
@@ -131,13 +131,14 @@ public class ViewControllerHandle extends JFrame implements Observer {
         if (inventoryDisplay.isVisible())
             updateInventoryDisplay(game.getPlayer().inventory);
 
+        // Tick des plugins
         Main.plugins.forEach(
                 plugin -> plugin.viewController.update()
         );
 
         // On applique la rotation au joueur
-        player.rotate(game.getPlayer().getOrientation().getRadians());
-        viewGrid[game.getPlayer().getPosition().x][game.getPlayer().getPosition().y].setIcon(player);
+        player.rotate(game.getPlayer().orientation.radians);
+        viewGrid[game.getPlayer().position.x][game.getPlayer().position.y].setIcon(player);
     }
 
     /**
@@ -150,7 +151,9 @@ public class ViewControllerHandle extends JFrame implements Observer {
             if (itemType.equals(NoItem.class))
                 continue;
 
+            // La case 0 est l'icône de l'objet
             inventoryGrid[0][i].setIcon(inventoryIcons.get(itemType));
+            // La case 1 affiche le nombre
             inventoryGrid[1][i++].setText(" x" + inv.count(itemType));
         }
     }
