@@ -1,5 +1,6 @@
 package jump;
 
+import meta.Plugin;
 import meta.ViewController;
 import model.Game;
 import view.ViewControllerHandle;
@@ -11,8 +12,8 @@ import java.awt.event.KeyEvent;
  * Contrôleur-vue pour le plugin saut
  */
 public class JumpViewController extends ViewController {
-    public JumpViewController(ViewControllerHandle handle, Game game) {
-        super(handle, game);
+    public JumpViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
+        super(plugin, handle, game);
     }
 
     @Override

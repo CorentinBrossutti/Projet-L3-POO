@@ -39,6 +39,12 @@ public class SingleUsageSlot extends NormalSlot implements Usable {
     }
 
     @Override
+    public void enter(Character character) {
+        if(!usable)
+            character.kill();
+    }
+
+    @Override
     public void leave(Character character) {
         super.leave(character);
         // La case devient utilisée lorsque le joueur passe dessus

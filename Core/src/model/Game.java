@@ -28,6 +28,7 @@ public class Game extends Observable implements Runnable {
 
 
     public Gen gen;
+    public final Set<Character> characters = new HashSet<>();
     protected Player player;
     /**
      * Grille des salles
@@ -39,6 +40,7 @@ public class Game extends Observable implements Runnable {
     private byte currentRoomIndex;
 
     public Game() {
+        player = new Player(this, Position.nullPos);
     }
 
     public Player getPlayer() {
@@ -58,6 +60,7 @@ public class Game extends Observable implements Runnable {
      */
     public void init(){
         gen = new Gen();
+        characters.add(player);
     }
 
     /**
@@ -73,8 +76,8 @@ public class Game extends Observable implements Runnable {
             // TODO jeu gagné
             rooms[i] = new Room(spos, new Position(-1, -1), i == ROOM_COUNT - 1);
         }
-        // On crée le joueur, sa positio est celle de départ de la première salle
-        player = new Player(this, rooms[0].start);
+        // On définit la position du joueur sur celle de départ de la première salle
+        player.position = rooms[0].start;
         // On assigne les contrôleurs de plugin
         Main.plugins.forEach(
                 plugin -> player.addController(plugin.name, plugin.model.customController(player))

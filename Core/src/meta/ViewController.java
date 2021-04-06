@@ -6,14 +6,15 @@ import view.ViewControllerHandle;
 /**
  * Une classe permettant de gérer les événements liées au graphisme du jeu.
  */
-public abstract class ViewController {
+public abstract class ViewController extends PluginDataClass{
     /**
      * La JFrame du jeu
      */
     protected ViewControllerHandle handle;
     protected Game game;
 
-    public ViewController(ViewControllerHandle handle, Game game) {
+    public ViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
+        super(plugin);
         this.handle = handle;
         this.game = game;
     }
@@ -40,8 +41,8 @@ public abstract class ViewController {
      * Un contrôleur vide pour les plugins qui ne s'en servent pas
      */
     public static class DummyViewController extends ViewController{
-        public DummyViewController(ViewControllerHandle handle, Game game) {
-            super(handle, game);
+        public DummyViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
+            super(plugin, handle, game);
         }
     }
 }

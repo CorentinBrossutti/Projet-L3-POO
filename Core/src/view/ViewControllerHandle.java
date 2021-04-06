@@ -12,10 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 import static util.Util.Images.loadIconResource;
 
@@ -33,7 +30,6 @@ public class ViewControllerHandle extends JFrame implements Observer {
             WINDOW_SIZE_Y = 330;
 
     private Game game;
-    private RotatableImageIcon player;
 
     /**
      * Grille de jeu
@@ -49,7 +45,9 @@ public class ViewControllerHandle extends JFrame implements Observer {
      * Le deuxième indice correspond, en 0, au label (l'icône de l'objet) et en 1 à la quantité
      */
     public JLabel[][] inventoryGrid;
-    public Map<Class<? extends Item>, RotatableImageIcon> inventoryIcons = new HashMap<>();
+    public final Map<Class<? extends Item>, RotatableImageIcon> inventoryIcons = new HashMap<>();
+
+    public final Map<Character, RotatableImageIcon> characterIcons = new HashMap<>();
 
 
     public ViewControllerHandle(Game game) {
@@ -119,7 +117,8 @@ public class ViewControllerHandle extends JFrame implements Observer {
         root.add(inventoryDisplay);
         add(root);
 
-        player = loadIconResource("/img/pacman.png");
+        characterIcons.put(game.getPlayer(), loadIconResource("/img/pacman.png"));
+
         Main.plugins.forEach(
                 plugin -> plugin.viewController.initGraphics()
         );
@@ -136,9 +135,22 @@ public class ViewControllerHandle extends JFrame implements Observer {
                 plugin -> plugin.viewController.update()
         );
 
-        // On applique la rotation au joueur
-        player.rotate(game.getPlayer().orientation.radians);
-        viewGrid[game.getPlayer().position.x][game.getPlayer().position.y].setIcon(player);
+        // On fait le rendu des personnages
+        Iterator<Character> it = game.characters.iterator();
+        Character temp;
+        while(it.hasNext()){
+            temp = it.next();
+            // Si le personnage est mort, on le retire de la liste
+            if(temp.dead){
+                it.remove();
+                continue;
+            }
+            else if(!characterIcons.containsKey(temp))
+                continue;
+
+            characterIcons.get(temp).rotate(temp.orientation.radians);
+            viewGrid[temp.position.x][temp.position.y].setIcon(characterIcons.get(temp));
+        }
     }
 
     /**

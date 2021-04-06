@@ -4,6 +4,7 @@ import base.model.board.items.Chest;
 import base.model.board.items.Key;
 import base.model.board.items.WaterCap;
 import base.model.board.statics.*;
+import meta.Plugin;
 import meta.ViewController;
 import model.Game;
 import model.board.items.Item;
@@ -29,8 +30,8 @@ public class BaseViewController extends ViewController {
     private Map<Class<? extends StaticEntity>, RotatableImageIcon> staticIcons;
     private RotatableImageIcon fire;
 
-    public BaseViewController(ViewControllerHandle handle, Game game) {
-        super(handle, game);
+    public BaseViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
+        super(plugin, handle, game);
     }
 
     @Override

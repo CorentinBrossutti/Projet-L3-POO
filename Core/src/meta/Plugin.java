@@ -4,6 +4,7 @@ import model.Game;
 import model.board.items.Item;
 import model.board.statics.StaticEntity;
 import util.WeightedRandomSupplier;
+import view.RotatableImageIcon;
 import view.ViewControllerHandle;
 
 import java.util.HashMap;
@@ -33,21 +34,33 @@ public abstract class Plugin {
         this.game = game;
         this.name = name;
         // Par défaut, modèles, événements et contrôleur vides
-        this.viewController = new ViewController.DummyViewController(handle, game);
-        this.events = new DummyEvents();
+        this.viewController = new ViewController.DummyViewController(this, handle, game);
+        this.events = new DummyEvents(this);
     }
 
     /**
-     * Appelée sur chaque plugin à chaque rafraîchissement du jeu
+     * Appelée sur chaque plugin à chaque rafraîchissement du jeu.
      */
     public void tick() {
     }
 
     /**
-     * Un modèle vide par défaut pour les plugins ne s'en servant pas
+     * Enregistre un personnage.
+     * @param character Le personnage
+     * @param icon L'icône du personnage pour affichage
+     */
+    public void registerCharacter(model.Character character, RotatableImageIcon icon){
+        viewController.handle.characterIcons.put(character, icon);
+        game.characters.add(character);
+    }
+
+    /**
+     * Un modèle vide par défaut pour les plugins ne s'en servant pas.
      */
     public static class DummyModel extends Model{
-        public DummyModel(){
+        public DummyModel(Plugin plugin){
+            super(plugin);
+
             itemSupplier = new WeightedRandomSupplier<>() {
                 @Override
                 public Map<Class<? extends Item>, Integer> supplyWeights() {
@@ -64,5 +77,9 @@ public abstract class Plugin {
 
     }
 
-    public static class DummyEvents extends Events {}
+    public static class DummyEvents extends Events {
+        public DummyEvents(Plugin plugin) {
+            super(plugin);
+        }
+    }
 }

@@ -33,14 +33,17 @@ public class PluginBase extends Plugin {
     public PluginBase(Game game, ViewControllerHandle handle) {
         super(game, handle, "Base");
 
-        model = new BaseModel();
-        viewController = new BaseViewController(handle, game);
-        events = ((BaseModel) model).new BaseEvents();
+        model = new BaseModel(this);
+        viewController = new BaseViewController(this, handle, game);
+        events = ((BaseModel) model).new BaseEvents(this);
     }
 
 
     public class BaseModel extends Model {
-        public BaseModel() {
+
+        public BaseModel(Plugin plugin) {
+            super(plugin);
+
             itemSupplier = new WeightedRandomSupplier<>() {
                 @Override
                 public Map<Class<? extends Item>, Integer> supplyWeights() {
@@ -129,7 +132,9 @@ public class PluginBase extends Plugin {
         }
 
         public class BaseEvents extends Events {
-            public BaseEvents(){
+            public BaseEvents(Plugin plugin){
+                super(plugin);
+
                 registerEvent(
                         Events.PLAYER_CHANGES_ROOM,
                         (Function<Object[], Void>) objects -> {

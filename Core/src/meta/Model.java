@@ -10,7 +10,7 @@ import util.WeightedRandomSupplier;
 /**
  * La classe Model contient les objets et méthodes liés à la gestion du modèle par le plugin
  */
-public abstract class Model {
+public abstract class Model extends PluginDataClass{
     /**
      * Sera additionné avec les autres fournisseurs (!)
      */
@@ -19,6 +19,10 @@ public abstract class Model {
      * Sera additionné avec les autres fournisseurs (!)
      */
     public WeightedRandomSupplier<StaticEntity> staticSupplier;
+
+    public Model(Plugin plugin) {
+        super(plugin);
+    }
 
     /**
      * Appelée sur chaque plugin lors de la génération d'une salle

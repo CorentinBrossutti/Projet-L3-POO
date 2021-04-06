@@ -8,13 +8,17 @@ import java.util.function.Function;
 /**
  * Gestion des événements
  */
-public abstract class Events {
+public abstract class Events extends PluginDataClass{
     public static final String
             PLAYER_CHANGES_ROOM = "player.changes_room",
             PLAYER_MOVES = "player.moves",
             PLAYER_USES = "player.uses";
 
-    private Map<String, Function<Object[], ?>> events = new HashMap<>();
+    private final Map<String, Function<Object[], ?>> events = new HashMap<>();
+
+    public Events(Plugin plugin) {
+        super(plugin);
+    }
 
     /**
      * Appelle un événement

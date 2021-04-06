@@ -4,6 +4,7 @@ import util.Position;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class Character {
     public final Game game;
@@ -24,6 +25,7 @@ public abstract class Character {
      * En clé, le nom du plugin lié, en valeur le contrôleur.
      */
     protected final Map<String, CharacterController> controllers = new HashMap<>();
+    protected final UUID characterId = UUID.randomUUID();
 
     public Character(Game game, int x, int y) {
         this(game, new Position(x, y));
@@ -76,6 +78,16 @@ public abstract class Character {
      */
     public void kill(){
         dead = true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Character && ((Character) o).characterId.equals(characterId);
+    }
+
+    @Override
+    public int hashCode() {
+        return characterId.hashCode();
     }
 
     /**
