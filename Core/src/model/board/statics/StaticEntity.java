@@ -1,5 +1,7 @@
 package model.board.statics;
 
+import model.Character;
+import model.Collideable;
 import model.Player;
 import model.Room;
 import model.board.items.Item;
@@ -19,22 +21,22 @@ public abstract class StaticEntity {
 
     /**
      * Retourne vrai s'il y a colllision, et donc si le joueur ne peut PAS passer
-     * @param character Joueur
+     * @param collideable Joueur
      * @return Vrai ou faux
      */
-    public abstract boolean collide(Player character);
+    public abstract boolean collide(Collideable collideable);
 
     /**
      * Méthode exécutée lorsque le joueur entre sur la case
      * @param character Le joueur
      */
-    public void enter(Player character){
+    public void enter(Character character){
     }
     /**
      * Méthode exécutée lorsque le joueur quitte la case
      * @param character Joueur
      */
-    public void leave(Player character) {
+    public void leave(Character character) {
     }
 
     /**

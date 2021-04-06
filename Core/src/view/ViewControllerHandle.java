@@ -1,9 +1,9 @@
 package view;
 
 import meta.Main;
+import model.Character;
 import model.Game;
 import model.Inventory;
-import model.Player;
 import model.Room;
 import model.board.items.Item;
 import model.board.items.NoItem;
@@ -65,10 +65,10 @@ public class ViewControllerHandle extends JFrame implements Observer {
             public void keyPressed(KeyEvent e) {
                 // on regarde quelle touche a été pressée
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT -> game.getPlayer().getCoreController().move(Player.Orientation.LEFT);
-                    case KeyEvent.VK_RIGHT -> game.getPlayer().getCoreController().move(Player.Orientation.RIGHT);
-                    case KeyEvent.VK_DOWN -> game.getPlayer().getCoreController().move(Player.Orientation.DOWN);
-                    case KeyEvent.VK_UP -> game.getPlayer().getCoreController().move(Player.Orientation.UP);
+                    case KeyEvent.VK_LEFT -> game.getPlayer().getCoreController().move(Character.Orientation.LEFT);
+                    case KeyEvent.VK_RIGHT -> game.getPlayer().getCoreController().move(Character.Orientation.RIGHT);
+                    case KeyEvent.VK_DOWN -> game.getPlayer().getCoreController().move(Character.Orientation.DOWN);
+                    case KeyEvent.VK_UP -> game.getPlayer().getCoreController().move(Character.Orientation.UP);
                     case KeyEvent.VK_I -> inventoryDisplay.setVisible(!inventoryDisplay.isVisible());
                 }
             }

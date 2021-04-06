@@ -1,6 +1,7 @@
 package base.model.board.statics;
 
-import model.Player;
+import model.Character;
+import model.Collideable;
 import model.Room;
 import model.board.statics.StaticEntity;
 
@@ -13,7 +14,7 @@ public class Wall extends StaticEntity {
     }
 
     @Override
-    public boolean collide(Player character) {
+    public boolean collide(Collideable collideable) {
         return true;
     }
 }

@@ -5,6 +5,7 @@
  */
 package model;
 
+import meta.Events;
 import meta.Main;
 import meta.Plugin;
 import model.board.items.Item;
@@ -78,9 +79,7 @@ public class Game extends Observable implements Runnable {
         Main.plugins.forEach(
                 plugin -> player.addController(plugin.name, plugin.model.customController(player))
         );
-        Main.plugins.forEach(
-                plugin -> plugin.events.playerChangesRoom(player, null, rooms[0])
-        );
+        Events.callVoid(Main.plugins, Events.PLAYER_CHANGES_ROOM, player, null, rooms[0]);
 
         new Thread(this).start();
     }
@@ -95,10 +94,7 @@ public class Game extends Observable implements Runnable {
             // Si la salle actuelle vient d'être terminée
             if (currentRoom().isDone()) {
                 // On envoie l'event de changement de salle pour les extensions, tout en mettant à jour l'indice
-                Main.plugins.forEach(
-                        plugin -> plugin.events.playerChangesRoom(player, rooms[currentRoomIndex], rooms[currentRoomIndex + 1])
-                );
-                currentRoomIndex++;
+                Events.callVoid(Main.plugins, Events.PLAYER_CHANGES_ROOM, player, rooms[currentRoomIndex], rooms[++currentRoomIndex]);
                 // On change la position du joueur pour celle de départ de la salle
                 player.position = currentRoom().start;
                 // Et son orientation (pour qu'il ne regarde pas le mur)

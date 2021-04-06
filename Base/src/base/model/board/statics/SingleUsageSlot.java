@@ -1,6 +1,8 @@
 package base.model.board.statics;
 
 import base.model.board.items.WaterCap;
+import model.Character;
+import model.Collideable;
 import model.Player;
 import model.Room;
 import model.board.items.Item;
@@ -31,13 +33,13 @@ public class SingleUsageSlot extends NormalSlot implements Usable {
     }
 
     @Override
-    public boolean collide(Player player) {
+    public boolean collide(Collideable collideable) {
         // Si la case est utilisée, le joueur ne peut pas la traverser (collision = vrai)
-        return !usable;
+        return collideable.askCollision(this, !usable, Boolean::logicalAnd);
     }
 
     @Override
-    public void leave(Player character) {
+    public void leave(Character character) {
         super.leave(character);
         // La case devient utilisée lorsque le joueur passe dessus
         usable = false;

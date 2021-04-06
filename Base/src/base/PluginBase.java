@@ -4,6 +4,8 @@ import base.model.board.items.Chest;
 import base.model.board.items.Key;
 import base.model.board.items.WaterCap;
 import base.model.board.statics.*;
+import meta.Events;
+import meta.Model;
 import meta.Plugin;
 import model.Game;
 import model.Player;
@@ -17,6 +19,7 @@ import view.ViewControllerHandle;
 
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
 
 import static model.Room.SIZE_X;
 import static model.Room.SIZE_Y;
@@ -126,11 +129,19 @@ public class PluginBase extends Plugin {
         }
 
         public class BaseEvents extends Events {
-            @Override
-            public void playerChangesRoom(Player player, Room previous, Room next) {
-                // On réinitialise les capsules d'eau du joueur
-                player.inventory.removeAllOf(WaterCap.class);
-                player.inventory.add(WaterCap.class, WCAP_COUNT);
+            public BaseEvents(){
+                registerEvent(
+                        Events.PLAYER_CHANGES_ROOM,
+                        (Function<Object[], Void>) objects -> {
+                            Player p = (Player) objects[0];
+
+                            // On réinitialise les capsules d'eau du joueur
+                            p.inventory.removeAllOf(WaterCap.class);
+                            p.inventory.add(WaterCap.class, WCAP_COUNT);
+
+                            return null;
+                        }
+                );
             }
         }
     }

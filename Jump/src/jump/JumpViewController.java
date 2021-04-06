@@ -21,7 +21,7 @@ public class JumpViewController extends ViewController {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_SPACE)
-                    game.getPlayer().getController("jump", PlayerJumpController.class).jump();
+                    game.getPlayer().getController("jump", PlayerControllerJump.class).jump();
             }
         });
     }

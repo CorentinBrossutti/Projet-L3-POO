@@ -1,6 +1,7 @@
 package base.model.board.statics;
 
-import model.Player;
+import model.Character;
+import model.Collideable;
 import model.Room;
 import model.board.statics.StaticEntity;
 import model.board.statics.Usable;
@@ -26,13 +27,13 @@ public class Door extends StaticEntity implements Usable {
     }
 
     @Override
-    public boolean collide(Player character) {
+    public boolean collide(Collideable collideable) {
         // Si la porte est verrouillée, alors il y a collision
-        return locked;
+        return collideable.askCollision(this, locked, Boolean::logicalAnd);
     }
 
     @Override
-    public void enter(Player character) {
+    public void enter(Character character) {
         // Si la porte est empruntée, on quitte la pièce
         room.terminate();
     }
