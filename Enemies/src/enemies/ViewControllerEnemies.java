@@ -2,15 +2,13 @@ package enemies;
 
 import meta.Plugin;
 import meta.ViewController;
-import model.Game;
 import util.Util;
-import view.RotatableImageIcon;
 import view.ViewControllerHandle;
 
 public class ViewControllerEnemies extends ViewController {
 
-    public ViewControllerEnemies(Plugin plugin, ViewControllerHandle handle, Game game) {
-        super(plugin, handle, game);
+    public ViewControllerEnemies(Plugin plugin, ViewControllerHandle handle) {
+        super(plugin, handle);
     }
 
     @Override

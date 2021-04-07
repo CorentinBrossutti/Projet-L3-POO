@@ -35,7 +35,7 @@ public abstract class Plugin {
         this.game = game;
         this.name = name;
         // Par défaut, modèles, événements et contrôleur vides
-        this.viewController = new ViewController.DummyViewController(this, handle, game);
+        this.viewController = new ViewController.DummyViewController(this, handle);
         this.events = new DummyEvents(this);
     }
 

@@ -11,12 +11,10 @@ public abstract class ViewController extends PluginDataClass{
      * La JFrame du jeu
      */
     protected ViewControllerHandle handle;
-    protected Game game;
 
-    public ViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
+    public ViewController(Plugin plugin, ViewControllerHandle handle) {
         super(plugin);
         this.handle = handle;
-        this.game = game;
     }
 
     /**
@@ -41,8 +39,8 @@ public abstract class ViewController extends PluginDataClass{
      * Un contrôleur vide pour les plugins qui ne s'en servent pas
      */
     public static class DummyViewController extends ViewController{
-        public DummyViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
-            super(plugin, handle, game);
+        public DummyViewController(Plugin plugin, ViewControllerHandle handle) {
+            super(plugin, handle);
         }
     }
 }

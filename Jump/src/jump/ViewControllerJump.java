@@ -2,7 +2,6 @@ package jump;
 
 import meta.Plugin;
 import meta.ViewController;
-import model.Game;
 import view.ViewControllerHandle;
 
 import java.awt.event.KeyAdapter;
@@ -11,9 +10,9 @@ import java.awt.event.KeyEvent;
 /**
  * Contrôleur-vue pour le plugin saut
  */
-public class JumpViewController extends ViewController {
-    public JumpViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
-        super(plugin, handle, game);
+public class ViewControllerJump extends ViewController {
+    public ViewControllerJump(Plugin plugin, ViewControllerHandle handle) {
+        super(plugin, handle);
     }
 
     @Override
@@ -22,7 +21,7 @@ public class JumpViewController extends ViewController {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_SPACE)
-                    game.getPlayer().getController("jump", PlayerControllerJump.class).jump();
+                    plugin.game.player.getController(plugin.name, PlayerControllerJump.class).jump();
             }
         });
     }

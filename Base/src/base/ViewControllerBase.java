@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static util.Util.Images.loadIconResource;
 
-public class BaseViewController extends ViewController {
+public class ViewControllerBase extends ViewController {
     /**
      * Map liant les types d'objet à leurs icônes
      */
@@ -30,8 +30,8 @@ public class BaseViewController extends ViewController {
     private Map<Class<? extends StaticEntity>, RotatableImageIcon> staticIcons;
     private RotatableImageIcon fire;
 
-    public BaseViewController(Plugin plugin, ViewControllerHandle handle, Game game) {
-        super(plugin, handle, game);
+    public ViewControllerBase(Plugin plugin, ViewControllerHandle handle) {
+        super(plugin, handle);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class BaseViewController extends ViewController {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_C)
-                    game.getPlayer().getCoreController().use(WaterCap.class);
+                    plugin.game.player.getCoreController().use(WaterCap.class);
             }
         });
     }
@@ -70,7 +70,7 @@ public class BaseViewController extends ViewController {
     public void update() {
         for (short x = 0; x < ViewControllerHandle.GRID_SIZE_X; x++) {
             for (short y = 0; y < ViewControllerHandle.GRID_SIZE_Y; y++) {
-                StaticEntity e = game.currentRoom().getStatic(x, y);
+                StaticEntity e = plugin.game.currentRoom().getStatic(x, y);
                 if (e instanceof SingleUsageSlot)
                     handle.viewGrid[x][y].setIcon(((SingleUsageSlot) e).usable() ? staticIcons.get(SingleUsageSlot.class) : fire);
                 else if (e instanceof NormalSlot) {

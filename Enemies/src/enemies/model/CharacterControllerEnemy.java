@@ -1,4 +1,4 @@
-package enemies.model.board;
+package enemies.model;
 
 import model.Character;
 import model.CharacterController;

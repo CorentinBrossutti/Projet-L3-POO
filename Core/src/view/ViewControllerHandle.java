@@ -63,10 +63,10 @@ public class ViewControllerHandle extends JFrame implements Observer {
             public void keyPressed(KeyEvent e) {
                 // on regarde quelle touche a été pressée
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT -> game.getPlayer().getCoreController().move(Character.Orientation.LEFT);
-                    case KeyEvent.VK_RIGHT -> game.getPlayer().getCoreController().move(Character.Orientation.RIGHT);
-                    case KeyEvent.VK_DOWN -> game.getPlayer().getCoreController().move(Character.Orientation.DOWN);
-                    case KeyEvent.VK_UP -> game.getPlayer().getCoreController().move(Character.Orientation.UP);
+                    case KeyEvent.VK_LEFT -> game.player.getCoreController().move(Character.Orientation.LEFT);
+                    case KeyEvent.VK_RIGHT -> game.player.getCoreController().move(Character.Orientation.RIGHT);
+                    case KeyEvent.VK_DOWN -> game.player.getCoreController().move(Character.Orientation.DOWN);
+                    case KeyEvent.VK_UP -> game.player.getCoreController().move(Character.Orientation.UP);
                     case KeyEvent.VK_I -> inventoryDisplay.setVisible(!inventoryDisplay.isVisible());
                 }
             }
@@ -117,7 +117,7 @@ public class ViewControllerHandle extends JFrame implements Observer {
         root.add(inventoryDisplay);
         add(root);
 
-        characterIcons.put(game.getPlayer(), loadIconResource("/img/pacman.png"));
+        characterIcons.put(game.player, loadIconResource("/img/pacman.png"));
 
         Main.plugins.forEach(
                 plugin -> plugin.viewController.initGraphics()
@@ -128,7 +128,7 @@ public class ViewControllerHandle extends JFrame implements Observer {
     public void update(Observable o, Object arg) {
         // Si l'inventaire est visible on le met à jour
         if (inventoryDisplay.isVisible())
-            updateInventoryDisplay(game.getPlayer().inventory);
+            updateInventoryDisplay(game.player.inventory);
 
         // Tick des plugins
         Main.plugins.forEach(
@@ -141,7 +141,7 @@ public class ViewControllerHandle extends JFrame implements Observer {
         while(it.hasNext()){
             temp = it.next();
             // Si le personnage est mort, on le retire de la liste
-            if(temp.dead){
+            if(temp.dead || temp.position.x < 0 || temp.position.y < 0){
                 it.remove();
                 continue;
             }

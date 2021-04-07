@@ -12,7 +12,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -164,7 +164,7 @@ public class PluginLoader extends URLClassLoader {
      * @return L'ensemble des plugins chargés
      */
     public Set<Plugin> loadPlugins(File folder, FilenameFilter filter) throws IOException, ClassNotFoundException {
-        Set<Plugin> temp = new HashSet<>();
+        Set<Plugin> temp = new LinkedHashSet<>();
 
         for (File f : folder.listFiles(filter))
             temp.add(load(f));

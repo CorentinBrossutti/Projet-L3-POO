@@ -1,14 +1,19 @@
 package enemies;
 
-import enemies.model.board.CharacterControllerEnemy;
-import enemies.model.board.Enemy;
+import enemies.model.CharacterControllerEnemy;
+import enemies.model.Enemy;
 import meta.Plugin;
+import model.Character;
 import model.Game;
 import view.RotatableImageIcon;
 import view.ViewControllerHandle;
 
 public class PluginEnemies extends Plugin {
+    /**
+     * Distance à partir de laquelle les ennemis repèrent les joueurs
+     */
     public static final double ENEMY_RANGE = 1.5;
+    public static final String ENEMY_CTRL_HANDLER = "enemy";
 
     public RotatableImageIcon enemy;
 
@@ -16,7 +21,7 @@ public class PluginEnemies extends Plugin {
         super(game, handle, "enemies");
 
         model = new ModelEnemies(this);
-        viewController = new ViewControllerEnemies(this, handle, game);
+        viewController = new ViewControllerEnemies(this, handle);
     }
 
     public void registerEnemy(int x, int y){
@@ -26,14 +31,15 @@ public class PluginEnemies extends Plugin {
 
     @Override
     public void tick() {
-        for(model.Character c : game.characters){
+        for(Character c : game.characters){
             if(c instanceof Enemy){
-                CharacterControllerEnemy controller = c.getController("enemy");
-                double dist = c.position.distance(game.getPlayer().position);
+                CharacterControllerEnemy controller = c.getController(ENEMY_CTRL_HANDLER);
+                double dist = c.position.distance(game.player.position);
+
                 if(dist == 0)
-                    game.getPlayer().kill();
+                    game.player.kill();
                 else if(dist <= ENEMY_RANGE)
-                    controller.go(game.getPlayer().position);
+                    controller.go(game.player.position);
                 if(game.gen.should(5))
                     controller.randomMovement();
             }

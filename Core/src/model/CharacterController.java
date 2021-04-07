@@ -24,6 +24,10 @@ public abstract class CharacterController {
         Position pos = direction.getNextPos(character.position);
         StaticEntity se = character.room().getStatic(pos);
 
+        // Mouvement invalide
+        if(se == null)
+            return;
+
         if ((!(character instanceof Collideable) || !se.collide((Collideable) character)) &&
                 Events.callBool(Main.plugins, Events.PLAYER_MOVES, false, character, character.position, pos, direction)) {
             // On obtient la case actuelle et on éxécute l'événement pour la quitter

@@ -29,7 +29,7 @@ public class Game extends Observable implements Runnable {
 
     public Gen gen;
     public final Set<Character> characters = new HashSet<>();
-    protected Player player;
+    public final Player player;
     /**
      * Grille des salles
      */
@@ -41,10 +41,6 @@ public class Game extends Observable implements Runnable {
 
     public Game() {
         player = new Player(this, Position.nullPos);
-    }
-
-    public Player getPlayer() {
-        return player;
     }
 
     /**
@@ -115,7 +111,7 @@ public class Game extends Observable implements Runnable {
     /**
      * Classe utilitaire de génération aléatoire pour les entités statiques et les objets.
      */
-    public class Gen {
+    public static class Gen {
         private final Random rand = new Random();
 
         /**
@@ -178,7 +174,7 @@ public class Game extends Observable implements Runnable {
         public Item pickItem() {
             Class<? extends Item> itemType = itemPicker.get(rand.nextInt(itemPicker.size()));
             return ItemContainer.class.isAssignableFrom(itemType) ?
-                    Util.Reflections.instantiate(itemType, gen) :
+                    Util.Reflections.instantiate(itemType, this) :
                     Util.Reflections.instantiate(itemType);
         }
 

@@ -41,11 +41,11 @@ public abstract class StaticEntity {
 
     /**
      * Méthode exécutée lorsque le joueur utilise un objet sur la case
-     * @param character Le joueur
+     * @param user Le joueur
      * @param item      L'objet
      * @return Vrai si l'objet peut être utilisé (retiré de l'inventaire donc), faux sinon
      */
-    public boolean use(Player character, Item item) {
+    public boolean use(Player user, Item item) {
         return false;
     }
 

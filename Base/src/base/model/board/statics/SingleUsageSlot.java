@@ -52,7 +52,7 @@ public class SingleUsageSlot extends NormalSlot implements Usable {
     }
 
     @Override
-    public boolean use(Player character, Item item) {
+    public boolean use(Player user, Item item) {
         // Si le joueur essaie d'utiliser une capsule sur cette case...
         if (item instanceof WaterCap) {
             // Alors elle devient de nouveau utilisable

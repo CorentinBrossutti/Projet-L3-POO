@@ -2,6 +2,7 @@ package base.model.board.statics;
 
 import model.Character;
 import model.Collideable;
+import model.Player;
 import model.Room;
 import model.board.statics.StaticEntity;
 import model.board.statics.Usable;
@@ -35,6 +36,7 @@ public class Door extends StaticEntity implements Usable {
     @Override
     public void enter(Character character) {
         // Si la porte est empruntée, on quitte la pièce
-        room.terminate();
+        if(character instanceof Player)
+            room.terminate();
     }
 }

@@ -1,7 +1,8 @@
-package enemies.model.board;
+package enemies.model;
 
 import base.model.board.statics.Hole;
 import base.model.board.statics.SingleUsageSlot;
+import enemies.PluginEnemies;
 import model.Character;
 import model.Collideable;
 import model.Game;
@@ -12,7 +13,7 @@ public class Enemy extends Character implements Collideable {
     public Enemy(Game game, int x, int y) {
         super(game, x, y);
 
-        addController("enemy", new CharacterControllerEnemy(this));
+        addController(PluginEnemies.ENEMY_CTRL_HANDLER, new CharacterControllerEnemy(this));
     }
 
     public Enemy(Game game, Position position) {
