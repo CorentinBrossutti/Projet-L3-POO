@@ -1,4 +1,7 @@
-package meta;
+package meta.events;
+
+import meta.Plugin;
+import meta.PluginDataClass;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,7 +11,7 @@ import java.util.function.Function;
 /**
  * Gestion des événements
  */
-public abstract class Events extends PluginDataClass{
+public abstract class Events extends PluginDataClass {
     public static final String
             PLAYER_CHANGES_ROOM = "player.changes_room",
             PLAYER_MOVES = "player.moves",
@@ -74,4 +77,5 @@ public abstract class Events extends PluginDataClass{
                 plugin -> plugin.events.call(event, args)
         );
     }
+
 }

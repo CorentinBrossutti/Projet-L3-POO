@@ -5,7 +5,7 @@
  */
 package model;
 
-import meta.Events;
+import meta.events.Events;
 import meta.Main;
 import model.board.items.Item;
 import model.board.statics.StaticEntity;

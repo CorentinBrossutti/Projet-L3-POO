@@ -4,7 +4,7 @@ import base.model.board.items.Chest;
 import base.model.board.items.Key;
 import base.model.board.items.WaterCap;
 import base.model.board.statics.*;
-import meta.Events;
+import meta.events.Events;
 import meta.Model;
 import meta.Plugin;
 import model.Game;

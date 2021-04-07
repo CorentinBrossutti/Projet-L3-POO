@@ -1,5 +1,6 @@
 package meta;
 
+import meta.events.Events;
 import model.Game;
 import model.board.items.Item;
 import model.board.statics.StaticEntity;

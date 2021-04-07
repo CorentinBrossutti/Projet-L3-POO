@@ -1,6 +1,6 @@
 package model;
 
-import meta.Events;
+import meta.events.Events;
 import meta.Main;
 import model.board.statics.StaticEntity;
 import util.Position;
