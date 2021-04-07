@@ -69,8 +69,8 @@ public class Inventory {
      * @param type Type de l'objet à ajouter, ex "Key.class"
      * @param count Nombre à ajouter
      */
-    public void add(Class<? extends Item> type, short count) {
-        for (short i = 0; i < count; i++)
+    public void add(Class<? extends Item> type, int count) {
+        for (int i = 0; i < count; i++)
             add(Util.Reflections.instantiate(type));
     }
 

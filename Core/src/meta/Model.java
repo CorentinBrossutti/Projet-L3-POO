@@ -1,7 +1,6 @@
 package meta;
 
 import model.Player;
-import model.CharacterController;
 import model.Room;
 import model.board.items.Item;
 import model.board.statics.StaticEntity;
@@ -40,7 +39,7 @@ public abstract class Model extends PluginDataClass{
      * @param player Le joueur
      * @return Un contrôleur personnalisé pour ce plugin, qui sera attaché au joueur
      */
-    public CharacterController customController(Player player) {
+    public Player.PlayerController customPlayerController(Player player) {
         return null;
     }
 

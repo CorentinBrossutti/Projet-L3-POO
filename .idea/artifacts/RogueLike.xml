@@ -9,6 +9,9 @@
         <element id="archive" name="PluginJump.jar">
           <element id="module-output" name="Jump" />
         </element>
+        <element id="archive" name="PluginEnemies.jar">
+          <element id="module-output" name="Enemies" />
+        </element>
       </element>
       <element id="archive" name="RogueLike.jar">
         <element id="directory" name="META-INF">

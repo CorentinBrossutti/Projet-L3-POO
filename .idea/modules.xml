@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Base/Base.iml" filepath="$PROJECT_DIR$/Base/Base.iml" />
       <module fileurl="file://$PROJECT_DIR$/Core/Core.iml" filepath="$PROJECT_DIR$/Core/Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Enemies/Enemies.iml" filepath="$PROJECT_DIR$/Enemies/Enemies.iml" />
       <module fileurl="file://$PROJECT_DIR$/Jump/Jump.iml" filepath="$PROJECT_DIR$/Jump/Jump.iml" />
     </modules>
   </component>

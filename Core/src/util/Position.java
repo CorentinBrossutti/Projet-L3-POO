@@ -13,6 +13,15 @@ public class Position {
         this.y = y;
     }
 
+    /**
+     *
+     * @param pos Position cible
+     * @return La distance euclidienne entre cette position et la position cible
+     */
+    public double distance(Position pos){
+        return Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
+    }
+
     @Override
     public boolean equals(Object o) {
         return o instanceof Position && ((Position) o).x == x && ((Position) o).y == y;

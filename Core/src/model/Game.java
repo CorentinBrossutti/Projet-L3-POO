@@ -80,7 +80,7 @@ public class Game extends Observable implements Runnable {
         player.position = rooms[0].start;
         // On assigne les contrôleurs de plugin
         Main.plugins.forEach(
-                plugin -> player.addController(plugin.name, plugin.model.customController(player))
+                plugin -> player.addController(plugin.name, plugin.model.customPlayerController(player))
         );
         Events.callVoid(Main.plugins, Events.PLAYER_CHANGES_ROOM, player, null, rooms[0]);
 
@@ -202,6 +202,23 @@ public class Game extends Observable implements Runnable {
                     }
             }
             return doorPos;
+        }
+
+        /**
+         *
+         * @return Une orientation aléatoire.
+         */
+        public Character.Orientation randomOrientation(){
+            return Character.Orientation.values()[rand.nextInt(Character.Orientation.values().length)];
+        }
+
+        /**
+         * Concrètement, il y a 1 chance sur odds que la fonction retourne vrai.
+         * @param odds Valeur de chance
+         * @return Vrai si le comportement conditionné par l'aléatoire doit avoir lieu.
+         */
+        public boolean should(int odds){
+            return rand.nextInt(odds) == 0;
         }
     }
 }

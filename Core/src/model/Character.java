@@ -52,7 +52,7 @@ public abstract class Character {
      * @param <T> Générique
      * @return Le contrôleur lié
      */
-    public <T extends CharacterController> T getController(String plugin, Class<T> dummy){
+    public <T extends CharacterController> T getController(String plugin, Class<T> dummy) {
         return getController(plugin);
     }
 

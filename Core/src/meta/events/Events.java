@@ -6,6 +6,7 @@ import meta.PluginDataClass;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**

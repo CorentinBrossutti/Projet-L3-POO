@@ -7,6 +7,7 @@ import base.model.board.statics.*;
 import meta.events.Events;
 import meta.Model;
 import meta.Plugin;
+import model.CharacterController;
 import model.Game;
 import model.Player;
 import model.Room;
@@ -35,7 +36,6 @@ public class PluginBase extends Plugin {
 
         model = new BaseModel(this);
         viewController = new BaseViewController(this, handle, game);
-        events = ((BaseModel) model).new BaseEvents(this);
     }
 
 

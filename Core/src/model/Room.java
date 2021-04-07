@@ -5,6 +5,8 @@ import model.board.statics.StaticEntity;
 import util.Position;
 import util.Util;
 
+import java.util.function.BiConsumer;
+
 /**
  * Une salle
  */
@@ -89,6 +91,17 @@ public class Room {
      */
     public void addStatic(StaticEntity entity, int x, int y) {
         grid[x][y] = entity;
+    }
+
+    /**
+     * Applique une fonction à chaque slot de la salle, arguments de la fonction : posX, posY.
+     * @param func Fonction à appliquer.
+     */
+    public void forEachSlot(BiConsumer<Short, Short> func){
+        for (short x = 0; x < SIZE_X; x++) {
+            for (short y = 0; y < SIZE_Y; y++)
+                func.accept(x, y);
+        }
     }
 
     /**

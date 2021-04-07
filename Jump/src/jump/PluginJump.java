@@ -3,7 +3,6 @@ package jump;
 import meta.Plugin;
 import model.Game;
 import model.Player;
-import model.CharacterController;
 import view.ViewControllerHandle;
 
 public class PluginJump extends Plugin {
@@ -21,7 +20,7 @@ public class PluginJump extends Plugin {
         }
 
         @Override
-        public CharacterController customController(Player player) {
+        public Player.PlayerController customPlayerController(Player player) {
             return new PlayerControllerJump(player);
         }
     }
