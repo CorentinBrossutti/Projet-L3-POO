@@ -6,7 +6,6 @@ import base.model.board.items.WaterCap;
 import base.model.board.statics.*;
 import meta.Plugin;
 import meta.ViewController;
-import model.Game;
 import model.board.items.Item;
 import model.board.items.NoItem;
 import model.board.statics.StaticEntity;

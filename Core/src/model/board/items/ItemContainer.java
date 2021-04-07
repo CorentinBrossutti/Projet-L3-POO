@@ -10,7 +10,7 @@ public abstract class ItemContainer extends Item {
     /**
      * Inventaire du conteneur
      */
-    public Inventory inventory = new Inventory();
+    public final Inventory inventory = new Inventory();
     /**
      * Objet handle de génération aléatoire
      */

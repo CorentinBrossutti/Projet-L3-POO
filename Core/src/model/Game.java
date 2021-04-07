@@ -33,7 +33,7 @@ public class Game extends Observable implements Runnable {
     /**
      * Grille des salles
      */
-    private Room[] rooms = new Room[ROOM_COUNT];
+    private final Room[] rooms = new Room[ROOM_COUNT];
     /**
      * Indice de salle actuelle dans le tableau
      */

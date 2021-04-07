@@ -1,6 +1,5 @@
 package base.model.board.statics;
 
-import model.Character;
 import model.Collideable;
 import model.Room;
 import model.board.statics.StaticEntity;

@@ -29,7 +29,7 @@ public class ViewControllerHandle extends JFrame implements Observer {
             WINDOW_SIZE_X = 620,
             WINDOW_SIZE_Y = 330;
 
-    private Game game;
+    private final Game game;
 
     /**
      * Grille de jeu

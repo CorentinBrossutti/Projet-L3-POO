@@ -28,8 +28,8 @@ public abstract class Plugin {
      * Le contrôleur-vue du plugin
      */
     public ViewController viewController;
-    public Game game;
-    public String name;
+    public final Game game;
+    public final String name;
 
     public Plugin(Game game, ViewControllerHandle handle, String name) {
         this.game = game;

@@ -36,7 +36,7 @@ public class Door extends StaticEntity implements Usable {
     @Override
     public void enter(Character character) {
         // Si la porte est empruntée, on quitte la pièce
-        if(character instanceof Player)
+        if (character instanceof Player)
             room.terminate();
     }
 }

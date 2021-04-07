@@ -40,7 +40,7 @@ public class SingleUsageSlot extends NormalSlot implements Usable {
 
     @Override
     public void enter(Character character) {
-        if(!usable)
+        if (!usable)
             character.kill();
     }
 
