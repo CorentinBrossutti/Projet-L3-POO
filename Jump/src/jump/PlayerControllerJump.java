@@ -19,15 +19,16 @@ public class PlayerControllerJump extends Player.PlayerController {
      * Tente de faire sauter le joueur deux cases plus loin
      */
     public void jump() {
-        Position target = character.orientation.getNextPos(character.position, JUMP_DISTANCE);
-        StaticEntity from = character.room().getStatic(character.orientation.getNextPos(character.position)),
-                to = character.room().getStatic(target);
+        Position target = player.orientation.getNextPos(player.position, JUMP_DISTANCE);
+        StaticEntity from = player.room().getStatic(player.position),
+                jumped = player.room().getStatic(player.orientation.getNextPos(player.position)),
+                to = player.room().getStatic(target);
 
         // Le joueur ne peut pas sauter, ni atterir sur un objet créant une collision
-        if (!(from instanceof Wall) && !to.collide(player)) {
-            from.leave(character);
-            character.position = target;
-            to.enter(character);
+        if (!(jumped instanceof Wall) && !to.collide(player)) {
+            from.leave(player);
+            player.position = target;
+            to.enter(player);
         }
     }
 }

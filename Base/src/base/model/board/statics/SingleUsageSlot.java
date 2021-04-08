@@ -34,12 +34,16 @@ public class SingleUsageSlot extends NormalSlot implements Usable {
 
     @Override
     public boolean collide(Collideable collideable) {
+        super.collide(collideable);
+
         // Si la case est utilisée, le joueur ne peut pas la traverser (collision = vrai)
         return collideable.askCollision(this, !usable, Boolean::logicalAnd);
     }
 
     @Override
     public void enter(Character character) {
+        super.enter(character);
+
         if (!usable)
             character.kill();
     }
@@ -53,6 +57,8 @@ public class SingleUsageSlot extends NormalSlot implements Usable {
 
     @Override
     public boolean use(Player user, Item item) {
+        super.use(user, item);
+
         // Si le joueur essaie d'utiliser une capsule sur cette case...
         if (item instanceof WaterCap) {
             // Alors elle devient de nouveau utilisable
