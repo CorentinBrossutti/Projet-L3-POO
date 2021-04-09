@@ -22,6 +22,7 @@ public class PluginEnemies extends Plugin {
 
         model = new ModelEnemies(this);
         viewController = new ViewControllerEnemies(this, handle);
+        events = new EventsEnemies(this);
     }
 
     public void registerEnemy(int x, int y){
