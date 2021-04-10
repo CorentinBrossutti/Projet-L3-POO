@@ -41,7 +41,7 @@ public class ModelBase extends Model {
             @Override
             public Map<Class<? extends StaticEntity>, Integer> supplyWeights() {
                 return Map.of(
-                        NormalSlot.class, 10,
+                        NormalSlot.class, 6,
                         Wall.class, 1,
                         Hole.class, 2,
                         SingleUsageSlot.class, 2
@@ -110,7 +110,7 @@ public class ModelBase extends Model {
                         room.exit.y = rand.nextInt(2) == 0 ? 0 : SIZE_Y - 1);
 
             // Puis on s'assure que la case à côté de la porte est accessible
-            Position ns = plugin.game.gen.getInnerSlotNextToDoor(room.exit);
+            Position ns = plugin.game.gen.getInnerCellPosNextToDoor(room.exit);
             if (!(room.getStatic(ns.x, ns.y) instanceof NormalSlot))
                 room.addStatic(new NormalSlot(room), ns.x, ns.y);
 

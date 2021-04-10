@@ -75,8 +75,8 @@ public class Game extends Observable implements Runnable {
         for (int i = 0; i < rooms.length; i++) {
             // Si l'on traite la première salle, alors la position sera (-1, -1) et donc choisi aléatoirement à la génération de la salle.
             // Sinon, la position de départ de la salle actuelle correspondra à la position à côté de la porte dans la salle précédente.
-            Position spos = gen.getInnerSlotNextToDoor(i == 0 ? new Position(-1, -1) : rooms[i - 1].exit);
-            //Position spos = gen.getSlotOppositeDoor(i == 0 ? Position.nullPos : rooms[i - 1].exit);
+            //Position spos = gen.getInnerCellPosNextToDoor(i == 0 ? new Position(-1, -1) : rooms[i - 1].exit);
+            Position spos = gen.getCellOppositeDoor(i == 0 ? Position.nullPos : rooms[i - 1].exit, true);
             rooms[i] = new Room(spos, new Position(-1, -1), false);
         }
         // On définit la position du joueur sur celle de départ de la première salle
@@ -200,7 +200,7 @@ public class Game extends Observable implements Runnable {
          * @param doorPos Position de la porte
          * @return Retourne la position d'entrée / sortie de la porte
          */
-        public Position getInnerSlotNextToDoor(Position doorPos) {
+        public Position getInnerCellPosNextToDoor(Position doorPos) {
             switch (doorPos.x) {
                 case 0:
                     return new Position(1, doorPos.y);
@@ -220,16 +220,28 @@ public class Game extends Observable implements Runnable {
         /**
          *
          * @param doorPos Position de la porte
+         * @param nice Vrai si la case doit être utilisable par un joueur ou autre, pas un mur...
          * @return Position opposée à la porte, pour le départ du joueur
          */
-        public Position getSlotOppositeDoor(Position doorPos){
+        public Position getCellOppositeDoor(Position doorPos, boolean nice){
             if(doorPos.equals(Position.nullPos))
                 return Position.nullPos;
 
-            if(doorPos.x == 0 || doorPos.x == Room.SIZE_X - 1)
-                return new Position(Room.SIZE_X - doorPos.x, doorPos.y);
+            switch(doorPos.x){
+                case 0:
+                    return new Position(Room.SIZE_X - (nice ? 2 : 1), doorPos.y);
+                case Room.SIZE_X - 1:
+                    return new Position(nice ? 1 : 0, doorPos.y);
+                default:
+                    switch(doorPos.y){
+                        case 0:
+                            return new Position(doorPos.x, Room.SIZE_Y - (nice ? 2 : 1));
+                        case Room.SIZE_Y - 1:
+                            return new Position(doorPos.x, nice ? 1 : 0);
+                    }
+            }
 
-            return new Position(doorPos.x, Room.SIZE_Y - doorPos.y);
+            return null;
         }
 
         /**

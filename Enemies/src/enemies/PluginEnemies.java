@@ -14,7 +14,7 @@ public class PluginEnemies extends Plugin {
      */
     public static final double ENEMY_RANGE = 10.;
     public static final String ENEMY_CTRL_HANDLER = "enemy";
-    public static final byte ENEMY_MOVE_ODDS = 3;
+    public static final byte ENEMY_MOVE_ODDS = 4;
 
     public RotatableImageIcon enemy;
 
