@@ -3,142 +3,179 @@ package enemies.model;
 import model.Character;
 import model.CharacterController;
 import model.Room;
+import model.board.statics.StaticEntity;
 import util.Position;
 
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
 
+/**
+ * CharacterControllerEnemy implemente A* search Algorithme
+ */
 public class CharacterControllerEnemy extends CharacterController {
+    /**
+     * open est une ArrayList des noeuds pas encore explorés
+     */
+    private final ArrayList<Node> open;
+
+    /**
+     * clodes est une ArrayListe des noeuds explorés
+     */
+    private final ArrayList<Node> closed;
+
+    /**
+     * path est l'ArrayList du chemin vers le joueur
+     */
+    private final ArrayList<Node> path;
+
+    /**
+     * room est la liste de nos entitées static
+     */
+    private StaticEntity[][] room;
+
+    /**
+     * now est le noeud actuel
+     */
+    private Node now;
+
+    /**
+     * xstart est la position en x initiale de l'ennemi - A changer en position
+     */
+    private final int xstart;
+
+    /**
+     * ystart est la position en y initale de l'ennemi - A changer en position
+     */
+    private final int ystart;
+
+    /**
+     * xPlayer est la position initiale en x du joueur,
+     * yPlayer est la position initiale en y du joueur
+     * A changer en Position
+     */
+    private int xPlayer, yPlayer;
+
+    /**
+     * Constructeur de CharacterControllerEnemy
+     * @param character
+     */
     public CharacterControllerEnemy(Character character) {
         super(character);
-        this.SX.add(character.position.x);
-        this.SY.add(character.position.y);
-        this.move_count = 0;
-        this.nodes_left_in_layer = 0;
-        this.nodes_in_next_layer = 1;
-        this.ended = false;
-    }
-    /* --- VARIABLES GLOBALES --- */
-
-    /**
-     * SX est une file où l'on stocke initialement la coordonnées X de l'ennemi.
-     * Elle sert à enfiler les coordonnées exploré en abscisse.
-     * @type_T: Integer est la classe pour les int.
-     */
-    private Queue<Integer> SX = new PriorityQueue<>();
-
-    /**
-     * SY est une file où l'on stocke initialement la coordonnées Y de l'ennemi.
-     * Elle sert à enfiler les coordonnées exploré en ordonné.
-     * @type_T: Integer est la classe pour les int.
-     */
-    private Queue<Integer> SY = new PriorityQueue<>();
-
-    /* --- VARIABLES POUR SUIVRE L'AVANCEE DE L'ALGO --- */
-    /**
-     * move_count est un compteur du nombre de mouvements.
-     */
-    private int move_count;
-
-    /**
-     * nodes_left_in_layer est un compteur du nombre de noeud restant à "défiler" avant la prochaine étape pour atteindre le joueur.
-     */
-    private int nodes_left_in_layer;
-
-    /**
-     * nodes_in_next_layer est un compteur du nombre de noeud que l'on a ajouté pendant l'éxecution de l'algo.
-     * Permet l'update adéquat de la variable nodes_left_in_layer.
-     */
-    private int nodes_in_next_layer;
-
-    /**
-     * ended est un boolean permettant de detecter si l'on a atteint le joueur.
-     */
-    private boolean ended;
-
-    /**
-     * visited est un tableau permettant un historique des cellules déjà explorés.
-     * Il évite que l'on retombe sur la même case plusieurs fois.
-     */
-    private boolean visited[][] = new boolean[Room.SIZE_X][Room.SIZE_Y];
-
-    /**
-     *  Vecteur pour les déplacements Nord et Sud.
-     */
-    private static int NS_directionVector[] = {-1, +1, 0, 0};
-
-    /**
-     * Vecteur pour les déplacements Est et Ouest.
-     */
-    private static int OE_directionVector[] = {0, 0, +1, -1};
-    /**
-     *
-     */
-    private boolean is_reached(Position position_player, Position enemy_pos){
-        return position_player.equals(enemy_pos);
-    }
-    /**
-     * Plus court chemin, faire aller l'ennemi à la cible.
-     * @param position Position cible.
-     */
-    public void solve(Position position) {
-        int x_ = character.position.x, y_ = character.position.y;
-        visited[x_][y_] = true;
-
-        do{
-            explore(x_, y_);
-            x_ = this.SX.poll();
-            y_ = this.SY.poll();
-            if (is_reached(position, this.character.position)) {
-                this.ended = true;
-                break;
+        this.open = new ArrayList<>();
+        this.closed = new ArrayList<>();
+        this.path = new ArrayList<>();
+        for(int i = 0; i < Room.SIZE_X; i++) {
+            for (int j = 0; j < Room.SIZE_Y; i++){
+                room[i][j] = character.room().getStatic(i,j);
             }
-            this.nodes_left_in_layer--;
-            if (nodes_left_in_layer == 0) {
-                nodes_left_in_layer = nodes_in_next_layer;
-                nodes_in_next_layer = 0;
-                move_count++;
-            }
-        }while(SX.size() > 0);
-
-        if(is_reached(position, this.character.position))
-            this.ended = true;
+        }
+        this.now = new Node(null, character.position.x, character.position.y, 0, 0);
+        this.xstart = character.position.x;
+        this.ystart = character.position.y;
     }
 
     /**
-     * Procédure d'exploration des cases voisines
-     * @param x
-     * @param y
+     * Classe interne pour les neouds
      */
-    public void explore(int x, int y){
-        Position pos_volatile = new Position(this.character.position.x, this.character.position.y);
-        for (int i = 0; i < 4; i++){
-            pos_volatile.x = x + this.NS_directionVector[i];
-            pos_volatile.y = y + this.OE_directionVector[i];
-            if(pos_volatile.x < 0 || pos_volatile.y < 0)
-                continue;
-            if(pos_volatile.x >= Room.SIZE_X || pos_volatile.y >= Room.SIZE_Y)
-                continue;
-            if(visited[pos_volatile.x][pos_volatile.y])
-                continue;
-            if(character.room().getStatic(pos_volatile).collide((Enemy)character))
-                continue;
+    static class Node implements Comparable{
+        public Node parent;
+        public int x,y;
+        public double g;
+        public double h;
 
-            this.SX.add(pos_volatile.x);
-            this.SY.add(pos_volatile.y);
-            this.visited[pos_volatile.x][pos_volatile.y] = true;
+        Node(Node parent, int xpos, int ypos, double g, double h){
+            this.parent = parent;
+            this.x = xpos;
+            this.y = ypos;
+            this.g = g;
+            this.h = h;
+        }
 
-            nodes_in_next_layer++;
+        @Override
+        public int compareTo(Object o){
+            Node that = (Node) o;
+            return (int)((this.g + this.h) - (that.g + that.h));
         }
     }
-    /**
-     * TODO: - Faire une file des cases pour atteindre l'ennemi à return dans solve;
-     *       - Déplacer l'ennemie en lisant la file return de solve;
-     */
 
     /**
-     * Fait bouger aléatoirement l'ennemi d'une case.
+     * Recherche le chemin vers la position du joueur ou retourne null
+     * @param position_player
+     * @return (List<Node> | null) la route
      */
+    public List<Node> findPathTo(Position position_player) {
+        this.xPlayer = position_player.x;
+        this.yPlayer = position_player.y;
+        this.closed.add(this.now);
+        addNeigborsToOpenList();
+        while (this.now.x != this.xPlayer || this.now.y != this.yPlayer) {
+            if (this.open.isEmpty()) { // Rien a examiner
+                return null;
+            }
+            this.now = this.open.get(0); // Prend le premier noeud (avec le plus petit f)
+            this.open.remove(0); // Le supprime
+            this.closed.add(this.now); // L'ajoute aux neouds explorés
+            addNeigborsToOpenList();
+        }
+        this.path.add(0, this.now);
+        while (this.now.x != this.xstart || this.now.y != this.ystart) {
+            this.now = this.now.parent;
+            this.path.add(0, this.now);
+        }
+        return this.path;
+    }
+
+    /**
+     ** Regarde un noeud dans List<> passé en paramètre
+     ** @return (bool) NeightborInListFound
+     */
+    private static boolean findNeighbor(List<Node> array, Node node) {
+        return array.stream().anyMatch((n) -> (n.x == node.x && n.y == node.y));
+    }
+
+    /**
+     * Calule la distance entre this.now et la position du joueur
+     * @return (int) distance
+     */
+    private double distance(int dx, int dy) {
+        return Math.abs(this.now.x + dx - this.xPlayer) + Math.abs(this.now.y + dy - this.yPlayer); // return Distance de Manathan
+    }
+
+    private void addNeigborsToOpenList() {
+        Node node;
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                node = new Node(this.now, this.now.x + x, this.now.y + y, this.now.g, this.distance(x, y));
+                if ((x != 0 || y != 0) //si on est pas au même endroit
+                        && this.now.x + x >= 0 && this.now.x + x < Room.SIZE_X // verification qu'on ne sort pas du cadre
+                        && this.now.y + y >= 0 && this.now.y + y < Room.SIZE_Y
+                        //&& character.room().getStatic(this.now.x + x,this.now.y + y).collide(); // check si ce n'est pas un mur
+                        && !findNeighbor(this.open, node) && !findNeighbor(this.closed, node)) { // si ce n'a pas déjà été fait
+                    node.g = node.parent.g + 1.; // coût Horizontal/vertical = 1.0
+                    //node.g += room[this.now.y + y][this.now.x + x]; //ajoute le coût du mouvement
+
+                    this.open.add(node); // Ajout aux noeud déjà fait
+                }
+            }
+        }
+        Collections.sort(this.open); // on trie la liste de mouvement
+    }
+
+    /*public CharacterControllerEnemy(Character character) {
+        super(character);
+    }*/
+    public void solve(Position position_player){
+        findPathTo(position_player);
+        int i = 0;
+        do {
+            character.position.x = path.get(i).x;
+            character.position.y = path.get(i).y;
+            i++;
+            path.remove(i);
+        }while(!path.isEmpty());
+
+    }
     public void randomMovement(){
         move(character.game.gen.randomOrientation());
     }
