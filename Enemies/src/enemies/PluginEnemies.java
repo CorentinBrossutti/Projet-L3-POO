@@ -39,8 +39,8 @@ public class PluginEnemies extends Plugin {
 
                 if(dist == 0)
                     game.player.kill();
-                else if(dist <= ENEMY_RANGE)
-                    controller.solve(game.player.position);
+                //else if(dist <= ENEMY_RANGE)
+                    //controller.solve(game.player.position);
                 if(game.gen.should(5))
                     controller.randomMovement();
             }

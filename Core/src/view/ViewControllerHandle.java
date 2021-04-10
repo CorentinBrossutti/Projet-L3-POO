@@ -26,8 +26,13 @@ public class ViewControllerHandle extends JFrame implements Observer {
     public static final short
             GRID_SIZE_X = Room.SIZE_X,
             GRID_SIZE_Y = Room.SIZE_Y,
-            WINDOW_SIZE_X = 620,
+            WINDOW_SIZE_X = 640,
             WINDOW_SIZE_Y = 330;
+
+    /**
+     * Le jeu est-il terminé (interface verrouillée) ?
+     */
+    public boolean terminated = false;
 
     private final Game game;
 
@@ -35,6 +40,11 @@ public class ViewControllerHandle extends JFrame implements Observer {
      * Grille de jeu
      */
     public JLabel[][] viewGrid;
+
+    /**
+     * Label affichant le niveau actuel
+     */
+    public JLabel level;
 
     /**
      * Composant d'affichage de l'inventaire
@@ -61,6 +71,10 @@ public class ViewControllerHandle extends JFrame implements Observer {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un objet qui correspond au controleur dans MVC
             @Override
             public void keyPressed(KeyEvent e) {
+
+                if(terminated)
+                    return;
+
                 // on regarde quelle touche a été pressée
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT -> game.player.getCoreController().move(Character.Orientation.LEFT);
@@ -85,6 +99,8 @@ public class ViewControllerHandle extends JFrame implements Observer {
 
         // On crée les composants
         JComponent tempGrid = new JPanel(new GridLayout(GRID_SIZE_Y, GRID_SIZE_X));
+        JComponent rightPane = new JPanel(new GridLayout(2, 1));
+        level = new JLabel("Niveau 1");
         inventoryDisplay = new JPanel(new GridLayout(itemCount, 2));
 
         // On initialise les cases de jeu...
@@ -108,17 +124,18 @@ public class ViewControllerHandle extends JFrame implements Observer {
 
         // On souhaite que l'inventaire se place horizontalement après la grille de jeu, et que chaque élément soit justifié à gauche
         ((FlowLayout) root.getLayout()).setAlignment(FlowLayout.LEFT);
-        // Taille de la grille de jeu : 3/4 de la fenêtre en largeur
-        tempGrid.setBounds(0, 0, Double.valueOf(getWidth() * 0.75).intValue(), getHeight());
-        // Taille de l'inventaire : 1/4 de la fenêtre en largeur, invisible par défaut
-        inventoryDisplay.setVisible(false);
-        inventoryDisplay.setBounds(Double.valueOf(getWidth() * 0.75).intValue() + 1, 0, Double.valueOf(getWidth() * 0.25).intValue(), getHeight());
+        // Panneau de droite
+        rightPane.add(level);
+        rightPane.add(inventoryDisplay);
+
         root.add(tempGrid);
-        root.add(inventoryDisplay);
+        root.add(rightPane);
         add(root);
 
+        // Icônes par défaut
         characterIcons.put(game.player, loadIconResource("/img/pacman.png"));
 
+        // Init des plugins
         Main.plugins.forEach(
                 plugin -> plugin.viewController.initGraphics()
         );
@@ -126,9 +143,36 @@ public class ViewControllerHandle extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        // Jeu gagné
+        if(game.currentRoom() == null){
+            terminated = true;
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Le jeu est gagné, bravo !",
+                    "Victoire !",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            System.exit(0);
+            return;
+        }
+        else if(game.player.dead){
+            terminated = true;
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vous êtes mort. Game over.",
+                    "Défaite !",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            System.exit(0);
+            return;
+        }
+
         // Si l'inventaire est visible on le met à jour
         if (inventoryDisplay.isVisible())
             updateInventoryDisplay(game.player.inventory);
+
+        // On met à jour le nom du niveau
+        level.setText("Niveau " + (game.getCurrentRoomIndex() + 1) + "/" + String.valueOf(Game.ROOM_COUNT));
 
         // Tick des plugins
         Main.plugins.forEach(

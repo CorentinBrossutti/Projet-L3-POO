@@ -20,6 +20,8 @@ import static model.Room.SIZE_X;
 import static model.Room.SIZE_Y;
 
 public class ModelBase extends Model {
+    public static final byte LOCKED_ODDS = 2;
+
     public ModelBase(PluginBase pluginBase, Plugin plugin) {
         super(plugin);
 
@@ -68,6 +70,7 @@ public class ModelBase extends Model {
 
         // Placement aléatoire d'entités statiques
         StaticEntity temp;
+        boolean roomHasKey = false;
         for (short x = 1; x < SIZE_X - 1; x++) {
             for (short y = 1; y < SIZE_Y - 1; y++) {
                 // Si on traite actuellement la case de départ, on l'ignore (traitée plus haut)
@@ -85,6 +88,8 @@ public class ModelBase extends Model {
                         room.start.x = x;
                         room.start.y = y;
                     }
+                    else if(((NormalSlot)temp).item.getClass().equals(Key.class))
+                        roomHasKey = true;
                 }
             }
         }
@@ -94,12 +99,13 @@ public class ModelBase extends Model {
             Random rand = new Random();
             // La porte se trouve elle sur les rangées horizontales ou verticales ?
             // Après, on choisit aléatoirement, de façon à ce que la porte ne soit pas dans un coin non plus
+            Door d = new Door(room);
             if (rand.nextInt(2) == 0)
-                room.addStatic(new Door(room),
+                room.addStatic(d,
                         room.exit.x = rand.nextInt(2) == 0 ? 0 : SIZE_X - 1,
                         room.exit.y = 1 + rand.nextInt(SIZE_Y - 2));
             else
-                room.addStatic(new Door(room),
+                room.addStatic(d,
                         room.exit.x = 1 + rand.nextInt(SIZE_X - 2),
                         room.exit.y = rand.nextInt(2) == 0 ? 0 : SIZE_Y - 1);
 
@@ -107,6 +113,9 @@ public class ModelBase extends Model {
             Position ns = plugin.game.gen.getSlotNextToDoor(room.exit);
             if (!(room.getStatic(ns.x, ns.y) instanceof NormalSlot))
                 room.addStatic(new NormalSlot(room), ns.x, ns.y);
+
+            if(roomHasKey && plugin.game.gen.should(LOCKED_ODDS))
+                d.mark(false);
         }
     }
 

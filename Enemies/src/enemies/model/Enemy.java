@@ -1,5 +1,6 @@
 package enemies.model;
 
+import base.model.board.statics.Door;
 import base.model.board.statics.Hole;
 import base.model.board.statics.SingleUsageSlot;
 import enemies.PluginEnemies;
@@ -23,6 +24,6 @@ public class Enemy extends Character implements Collideable {
 
     @Override
     public Boolean collidesWith(StaticEntity staticEntity) {
-        return staticEntity instanceof Hole || staticEntity instanceof SingleUsageSlot ? false : null;
+        return !(staticEntity instanceof Hole) && !(staticEntity instanceof SingleUsageSlot) && (staticEntity instanceof Door ? true : null);
     }
 }

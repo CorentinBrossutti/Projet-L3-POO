@@ -14,6 +14,7 @@ import model.board.statics.StaticEntity;
 import util.Position;
 import util.Util;
 
+import javax.swing.*;
 import java.util.*;
 
 public class Game extends Observable implements Runnable {
@@ -45,10 +46,18 @@ public class Game extends Observable implements Runnable {
 
     /**
      *
+     * @return L'indice de la salle actuelle
+     */
+    public byte getCurrentRoomIndex() {
+        return currentRoomIndex;
+    }
+
+    /**
+     *
      * @return La salle actuelle
      */
     public Room currentRoom() {
-        return rooms[currentRoomIndex];
+        return currentRoomIndex >= rooms.length ? null : rooms[currentRoomIndex];
     }
 
     /**
@@ -64,13 +73,13 @@ public class Game extends Observable implements Runnable {
      */
     public void start(){
         // On génère les salles
-        for (int i = 0; i < ROOM_COUNT; i++) {
+        for (int i = 0; i < rooms.length; i++) {
             // Si l'on traite la première salle, alors la position sera (-1, -1) et donc choisi aléatoirement à la génération de la salle.
             // Sinon, la position de départ de la salle actuelle correspondra à la position à côté de la porte dans la salle précédente.
             Position spos = gen.getSlotNextToDoor(i == 0 ? new Position(-1, -1) : rooms[i - 1].exit);
             // Similairement, la dernière salle n'a pas de porte, pour l'instant...
             // TODO jeu gagné
-            rooms[i] = new Room(spos, new Position(-1, -1), i == ROOM_COUNT - 1);
+            rooms[i] = new Room(spos, new Position(-1, -1), false);
         }
         // On définit la position du joueur sur celle de départ de la première salle
         player.position = rooms[0].start;
@@ -91,9 +100,18 @@ public class Game extends Observable implements Runnable {
             setChanged();
             notifyObservers();
             // Si la salle actuelle vient d'être terminée
-            if (currentRoom().isDone()) {
+            if (currentRoom() != null && currentRoom().isDone()) {
                 // On envoie l'event de changement de salle pour les extensions, tout en mettant à jour l'indice
-                Events.callVoid(Main.plugins, Events.PLAYER_CHANGES_ROOM, player, rooms[currentRoomIndex], rooms[++currentRoomIndex]);
+                // Jeu gagné
+                if(++currentRoomIndex >= rooms.length)
+                    continue;
+                Events.callVoid(
+                        Main.plugins,
+                        Events.PLAYER_CHANGES_ROOM,
+                        player,
+                        rooms[currentRoomIndex - 1],
+                        rooms[currentRoomIndex]
+                );
                 // On change la position du joueur pour celle de départ de la salle
                 player.position = currentRoom().start;
                 // Et son orientation (pour qu'il ne regarde pas le mur)
