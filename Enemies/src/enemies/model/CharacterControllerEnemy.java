@@ -32,7 +32,7 @@ public class CharacterControllerEnemy extends CharacterController {
     /**
      * room est la liste de nos entitées static
      */
-    private StaticEntity[][] room;
+    private StaticEntity[][] room = new StaticEntity[Room.SIZE_X][Room.SIZE_Y];
 
     /**
      * now est le noeud actuel
@@ -66,7 +66,7 @@ public class CharacterControllerEnemy extends CharacterController {
         this.closed = new ArrayList<>();
         this.path = new ArrayList<>();
         for(int i = 0; i < Room.SIZE_X; i++) {
-            for (int j = 0; j < Room.SIZE_Y; i++){
+            for (int j = 0; j < Room.SIZE_Y; j++){
                 room[i][j] = character.room().getStatic(i,j);
             }
         }
