@@ -14,6 +14,7 @@ public class PluginEnemies extends Plugin {
      */
     public static final double ENEMY_RANGE = 10.;
     public static final String ENEMY_CTRL_HANDLER = "enemy";
+    public static final byte ENEMY_MOVE_ODDS = 3;
 
     public RotatableImageIcon enemy;
 
@@ -41,7 +42,7 @@ public class PluginEnemies extends Plugin {
                     game.player.kill();
                 //else if(dist <= ENEMY_RANGE)
                     //controller.solve(game.player.position);
-                if(game.gen.should(5))
+                if(game.gen.should(ENEMY_MOVE_ODDS))
                     controller.randomMovement();
             }
         }
