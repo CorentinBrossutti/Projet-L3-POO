@@ -1,5 +1,6 @@
 package enemies.model;
 
+import base.model.board.statics.Wall;
 import model.Character;
 import model.CharacterController;
 import model.Room;
@@ -104,14 +105,14 @@ public class CharacterControllerEnemy extends CharacterController {
      * @param position_player
      * @return (List<Node> | null) la route
      */
-    public List<Node> findPathTo(Position position_player) {
+    public void findPathTo(Position position_player) {
         this.xPlayer = position_player.x;
         this.yPlayer = position_player.y;
         this.closed.add(this.now);
         addNeigborsToOpenList();
         while (this.now.x != this.xPlayer || this.now.y != this.yPlayer) {
             if (this.open.isEmpty()) { // Rien a examiner
-                return null;
+                break;
             }
             this.now = this.open.get(0); // Prend le premier noeud (avec le plus petit f)
             this.open.remove(0); // Le supprime
@@ -123,7 +124,6 @@ public class CharacterControllerEnemy extends CharacterController {
             this.now = this.now.parent;
             this.path.add(0, this.now);
         }
-        return this.path;
     }
 
     /**
@@ -171,10 +171,18 @@ public class CharacterControllerEnemy extends CharacterController {
         do {
             character.position.x = path.get(i).x;
             character.position.y = path.get(i).y;
+            Position target = character.orientation.getNextPos(character.position, 1);
+            StaticEntity from = character.room().getStatic(character.orientation.getNextPos(character.position)),
+                    pos = character.room().getStatic(character.orientation.getNextPos(character.position)),
+                    to = character.room().getStatic(target);
             i++;
             path.remove(i);
+            if(!(pos instanceof Wall)){
+                from.leave(character);
+                character.position = target;
+                to.enter(character);
+            }
         }while(!path.isEmpty());
-
     }
     public void randomMovement(){
         move(character.game.gen.randomOrientation());
