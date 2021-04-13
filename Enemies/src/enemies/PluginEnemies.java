@@ -5,8 +5,11 @@ import enemies.model.Enemy;
 import meta.Plugin;
 import model.Character;
 import model.Game;
+import util.Position;
 import view.RotatableImageIcon;
 import view.ViewControllerHandle;
+
+import java.util.ArrayList;
 
 public class PluginEnemies extends Plugin {
     /**
@@ -15,6 +18,8 @@ public class PluginEnemies extends Plugin {
     public static final double ENEMY_RANGE = 10.;
     public static final String ENEMY_CTRL_HANDLER = "enemy";
     public static final byte ENEMY_MOVE_ODDS = 4;
+    private int tick_num = 0;
+    private ArrayList<CharacterControllerEnemy.Node> path;
 
     public RotatableImageIcon enemy;
 
@@ -40,10 +45,17 @@ public class PluginEnemies extends Plugin {
 
                 if(dist == 0)
                     game.player.kill();
-                else if(dist <= ENEMY_RANGE)
-                    controller.solve(game.player.position);
-                if(game.gen.should(ENEMY_MOVE_ODDS))
-                    controller.randomMovement();
+                else if(dist <= ENEMY_RANGE){
+                    path = controller.solve(game.player.position);
+                    c.position.x = path.get(tick_num).x;
+                    c.position.y = path.get(tick_num).y;
+                    if (game.gen.should(10)){ // Permet au joueur d'avoir le temps de se déplacer -> sinon l'ennemi est trop rapide
+                        move(c.position);
+                        this.tick_num++;
+                    }
+                }
+                /*if(game.gen.should(ENEMY_MOVE_ODDS))
+                    controller.randomMovement();*/
             }
         }
     }

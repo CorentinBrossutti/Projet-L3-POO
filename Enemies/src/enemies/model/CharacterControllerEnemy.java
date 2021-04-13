@@ -1,6 +1,5 @@
 package enemies.model;
 
-import base.model.board.statics.Wall;
 import model.Character;
 import model.CharacterController;
 import model.Room;
@@ -8,7 +7,6 @@ import model.board.statics.StaticEntity;
 import util.Position;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -43,12 +41,12 @@ public class CharacterControllerEnemy extends CharacterController {
     /**
      * xstart est la position en x initiale de l'ennemi - A changer en position
      */
-    private final int xstart;
+    private final int xStart;
 
     /**
      * ystart est la position en y initale de l'ennemi - A changer en position
      */
-    private final int ystart;
+    private final int yStart;
 
     /**
      * xPlayer est la position initiale en x du joueur,
@@ -72,14 +70,14 @@ public class CharacterControllerEnemy extends CharacterController {
             }
         }
         this.now = new Node(null, character.position.x, character.position.y, 0, 0);
-        this.xstart = character.position.x;
-        this.ystart = character.position.y;
+        this.xStart = character.position.x;
+        this.yStart = character.position.y;
     }
 
     /**
      * Classe interne pour les neouds
      */
-    static class Node implements Comparable{
+    public class Node implements Comparable{
         public Node parent;
         public int x,y;
         public double g;
@@ -103,7 +101,6 @@ public class CharacterControllerEnemy extends CharacterController {
     /**
      * Recherche le chemin vers la position du joueur ou retourne null
      * @param position_player
-     * @return (List<Node> | null) la route
      */
     public void findPathTo(Position position_player) {
         this.xPlayer = position_player.x;
@@ -120,7 +117,7 @@ public class CharacterControllerEnemy extends CharacterController {
             addNeigborsToOpenList();
         }
         this.path.add(0, this.now);
-        while (this.now.x != this.xstart || this.now.y != this.ystart) {
+        while (this.now.x != this.xStart || this.now.y != this.yStart) {
             this.now = this.now.parent;
             this.path.add(0, this.now);
         }
@@ -130,18 +127,21 @@ public class CharacterControllerEnemy extends CharacterController {
      ** Regarde un noeud dans List<> passé en paramètre
      ** @return (bool) NeightborInListFound
      */
-    private static boolean findNeighbor(List<Node> array, Node node) {
+    private static boolean findNeighbor(ArrayList<Node> array, Node node) {
         return array.stream().anyMatch((n) -> (n.x == node.x && n.y == node.y));
     }
 
     /**
-     * Calule la distance entre this.now et la position du joueur
+     * Calule la distance entre this.now et la position du joueur - clacul de la distance de Manathan
      * @return (int) distance
      */
     private double distance(int dx, int dy) {
         return Math.abs(this.now.x + dx - this.xPlayer) + Math.abs(this.now.y + dy - this.yPlayer); // return Distance de Manathan
     }
 
+    /**
+     * Ajoute les Noeuds voisin à la liste des noeuds à explorer
+     */
     private void addNeigborsToOpenList() {
         Node node;
         for (int x = -1; x <= 1; x++) {
@@ -155,35 +155,26 @@ public class CharacterControllerEnemy extends CharacterController {
                     node.g = node.parent.g + 1.; // coût Horizontal/vertical = 1.0
                     //node.g += room[this.now.y + y][this.now.x + x]; //ajoute le coût du mouvement
 
-                    this.open.add(node); // Ajout aux noeud déjà fait
+                    this.open.add(node); // Ajout aux noeud qui ont été déjà fait
                 }
             }
         }
         Collections.sort(this.open); // on trie la liste de mouvement
     }
 
-    /*public CharacterControllerEnemy(Character character) {
-        super(character);
-    }*/
-    public void solve(Position position_player){
+    /**
+     *
+     * @param position_player
+     * @return La liste des mouvements pour atteindre le joueur
+     */
+    public ArrayList<Node> solve(Position position_player){
         findPathTo(position_player);
-        int i = 0;
-        do {
-            character.position.x = path.get(i).x;
-            character.position.y = path.get(i).y;
-            Position target = character.orientation.getNextPos(character.position, 1);
-            StaticEntity from = character.room().getStatic(character.orientation.getNextPos(character.position)),
-                    pos = character.room().getStatic(character.orientation.getNextPos(character.position)),
-                    to = character.room().getStatic(target);
-            i++;
-            path.remove(i);
-            if(!(pos instanceof Wall)){
-                from.leave(character);
-                character.position = target;
-                to.enter(character);
-            }
-        }while(!path.isEmpty());
+        return this.path;
     }
+
+    /**
+     * Déplace l'ennemi de manière aléatoire sur le terrain
+     */
     public void randomMovement(){
         move(character.game.gen.randomOrientation());
     }
