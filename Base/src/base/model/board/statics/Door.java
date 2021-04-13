@@ -16,6 +16,8 @@ public class Door extends StaticEntity implements Usable {
 
     public Door(Room _room) {
         super(_room);
+
+        locked = false;
     }
 
     @Override

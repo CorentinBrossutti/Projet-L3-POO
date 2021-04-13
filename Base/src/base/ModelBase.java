@@ -81,15 +81,18 @@ public class ModelBase extends Model {
                 room.addStatic((temp = plugin.game.gen.pickStatic(room)), x, y);
                 // Si la case est normale
                 if (temp instanceof NormalSlot) {
-                    // On y ajoute un objet aléatoire (ou pas, si la fonction de sélection retourne NoItem)
-                    ((NormalSlot) temp).item = plugin.game.gen.pickItem();
                     // Si la position de départ n'est pas encore valide, alors c'est celle-ci (première case valide)
                     if (room.start.x < 0 || room.start.y < 0) {
                         room.start.x = x;
                         room.start.y = y;
                     }
-                    else if(((NormalSlot)temp).item.getClass().equals(Key.class))
-                        roomHasKey = true;
+                    else{
+                        // On y ajoute un objet aléatoire (ou pas, si la fonction de sélection retourne NoItem)
+                        Item i = plugin.game.gen.pickItem();
+                        ((NormalSlot) temp).item = i;
+                        if(i instanceof Key)
+                            roomHasKey = true;
+                    }
                 }
             }
         }

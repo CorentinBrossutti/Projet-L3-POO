@@ -17,7 +17,7 @@ public abstract class Character {
     /**
      * L'orientation du personnage (de sa vue)
      */
-    public Player.Orientation orientation = Orientation.RIGHT;
+    public Player.Orientation orientation = Orientation.DEFAULT;
     /**
      * Le personnage est-il mort ?
      */
@@ -103,6 +103,11 @@ public abstract class Character {
         RIGHT(0);
 
         /**
+         * Orientation par défaut
+         */
+        public static final Orientation DEFAULT = RIGHT;
+
+        /**
          * Rotation en degrés
          */
         public final double degrees;
@@ -160,8 +165,10 @@ public abstract class Character {
          * @return L'orientation la plus proche du vecteur reliant les deux points
          */
         public static Orientation resolve(Position start, Position end){
-            int vx = end.x - start.x, vy = end.y - start.y;
+            if(start.equals(end))
+                return Orientation.DEFAULT;
 
+            int vx = end.x - start.x, vy = end.y - start.y;
             double vmag = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
             // Angle en radians entre le vecteur début-fin et le vecteur unitaire X, ainsi que le vecteur unitaire Y
             double angx = Math.acos(vx / vmag), angy = Math.acos(vy / vmag);
