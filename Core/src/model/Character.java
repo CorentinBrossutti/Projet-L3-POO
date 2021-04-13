@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.lang.Math.PI;
+
 public abstract class Character {
     public final Game game;
     /**
@@ -149,6 +151,31 @@ public abstract class Character {
                 case DOWN -> new Position(pos.x, pos.y + offset);
                 case RIGHT -> new Position(pos.x + offset, pos.y);
             };
+        }
+
+        /**
+         *
+         * @param start Position de début
+         * @param end Position de fin
+         * @return L'orientation la plus proche du vecteur reliant les deux points
+         */
+        public static Orientation resolve(Position start, Position end){
+            int vx = end.x - start.x, vy = end.y - start.y;
+
+            double vmag = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
+            // Angle en radians entre le vecteur début-fin et le vecteur unitaire X, ainsi que le vecteur unitaire Y
+            double angx = Math.acos(vx / vmag), angy = Math.acos(vy / vmag);
+
+            if(angx <= PI / 4 && angy >= PI / 4)
+                return Orientation.RIGHT;
+            else if(angx >= PI / 4 && angx <= PI / 2 && angy >= PI / 2)
+                return Orientation.UP;
+            else if(angx >= PI / 2 && angy >= PI / 4)
+                return Orientation.LEFT;
+            else if(angx >= PI / 4 && angx <= PI / 2 && angy <= PI / 2)
+                return Orientation.DOWN;
+
+            return null;
         }
     }
 }
