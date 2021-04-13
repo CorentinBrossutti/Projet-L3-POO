@@ -46,15 +46,15 @@ public class PluginEnemies extends Plugin {
                 if(dist == 0)
                     game.player.kill();
                 else if(dist <= ENEMY_RANGE){
-                    path = controller.solve(game.player.position);
-                    c.position.x = path.get(tick_num).x;
-                    c.position.y = path.get(tick_num).y;
-                    if (game.gen.should(10)){ // Permet au joueur d'avoir le temps de se déplacer -> sinon l'ennemi est trop rapide
-                        move(c.position);
-                        this.tick_num++;
+                        path = controller.solve(game.player.position);
+                        c.position.x = path.get(tick_num).x;
+                        c.position.y = path.get(tick_num).y;
+                        if (game.gen.should(10)) { // Permet au joueur d'avoir le temps de se déplacer -> sinon l'ennemi est trop rapide
+                            controller.move(c.position);
+                            this.tick_num++;
                     }
                 }
-                /*if(game.gen.should(ENEMY_MOVE_ODDS))
+                /*else if(game.gen.should(ENEMY_MOVE_ODDS))
                     controller.randomMovement();*/
             }
         }
