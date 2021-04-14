@@ -52,8 +52,8 @@ public abstract class CharacterController {
         // Mouvement invalide
         if(se == null)
             return;
-        // Position invalide
-        else if(destination.x <= 0 || destination.x >= Room.SIZE_X - 1 || destination.y <= 0 || destination.y >= Room.SIZE_Y)
+        // Mauvaise position
+        else if(destination.x < 0 || destination.x >= Room.SIZE_X || destination.y < 0 || destination.y >= Room.SIZE_Y)
             return;
 
         if ((!(character instanceof Collideable) || !se.collide((Collideable) character)) &&

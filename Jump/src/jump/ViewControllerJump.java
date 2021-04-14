@@ -20,7 +20,7 @@ public class ViewControllerJump extends ViewController {
         handle.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_SPACE)
+                if (e.getKeyCode() == KeyEvent.VK_SPACE)
                     plugin.game.player.getController(plugin.name, PlayerControllerJump.class).jump();
             }
         });

@@ -141,8 +141,8 @@ public class CharacterControllerEnemy extends CharacterController {
             for (int y = -1; y <= 1; y++) {
                 node = new Node(this.now, this.now.x + x, this.now.y + y, this.now.g, this.distance(x, y));
                 if ((x != 0 || y != 0) //si on est pas au même endroit
-                        && this.now.x + x >= 0 && this.now.x + x < Room.SIZE_X // verification qu'on ne sort pas du cadre
-                        && this.now.y + y >= 0 && this.now.y + y < Room.SIZE_Y
+                        && this.now.x + x > 0 && this.now.x + x < Room.SIZE_X - 1 // verification qu'on ne sort pas du cadre
+                        && this.now.y + y > 0 && this.now.y + y < Room.SIZE_Y - 1
                         && !findNeighbor(this.open, node) && !findNeighbor(this.closed, node)
                         && !room[now.x + x][now.y + y].collide((Collideable) character)) { // si ce n'a pas déjà été fait
                     node.g = node.parent.g + 1.; // coût Horizontal/vertical = 1.0
