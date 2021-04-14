@@ -1,14 +1,13 @@
 package enemies.model;
 
-import base.model.board.statics.Wall;
-import model.Character;
 import model.CharacterController;
+import model.Collideable;
 import model.Room;
 import model.board.statics.StaticEntity;
 import util.Position;
 
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * CharacterControllerEnemy implemente A* search Algorithme
@@ -60,7 +59,7 @@ public class CharacterControllerEnemy extends CharacterController {
      * Constructeur de CharacterControllerEnemy
      * @param character
      */
-    public CharacterControllerEnemy(Character character) {
+    public CharacterControllerEnemy(Enemy character) {
         super(character);
         this.open = new ArrayList<>();
         this.closed = new ArrayList<>();
@@ -90,29 +89,6 @@ public class CharacterControllerEnemy extends CharacterController {
         this.now = new Node(null, character.position.x, character.position.y, 0, 0);
         this.xStart = character.position.x;
         this.yStart = character.position.y;
-    }
-    /**
-     * Classe interne pour les neouds
-     */
-    public class Node implements Comparable{
-        public Node parent;
-        public int x,y;
-        public double g;
-        public double h;
-
-        Node(Node parent, int xpos, int ypos, double g, double h){
-            this.parent = parent;
-            this.x = xpos;
-            this.y = ypos;
-            this.g = g;
-            this.h = h;
-        }
-
-        @Override
-        public int compareTo(Object o){
-            Node that = (Node) o;
-            return (int)((this.g + this.h) - (that.g + that.h));
-        }
     }
 
     /**
@@ -167,7 +143,8 @@ public class CharacterControllerEnemy extends CharacterController {
                 if ((x != 0 || y != 0) //si on est pas au même endroit
                         && this.now.x + x >= 0 && this.now.x + x < Room.SIZE_X // verification qu'on ne sort pas du cadre
                         && this.now.y + y >= 0 && this.now.y + y < Room.SIZE_Y
-                        && !findNeighbor(this.open, node) && !findNeighbor(this.closed, node)) { // si ce n'a pas déjà été fait
+                        && !findNeighbor(this.open, node) && !findNeighbor(this.closed, node)
+                        && !room[now.x + x][now.y + y].collide((Collideable) character)) { // si ce n'a pas déjà été fait
                     node.g = node.parent.g + 1.; // coût Horizontal/vertical = 1.0
 
                     this.open.add(node); // Ajout aux noeud qui ont été déjà fait
@@ -194,5 +171,29 @@ public class CharacterControllerEnemy extends CharacterController {
      */
     public void randomMovement(){
         move(character.game.gen.randomOrientation());
+    }
+
+    /**
+     * Classe interne pour les neouds
+     */
+    public class Node implements Comparable{
+        public Node parent;
+        public int x,y;
+        public double g;
+        public double h;
+
+        Node(Node parent, int xpos, int ypos, double g, double h){
+            this.parent = parent;
+            this.x = xpos;
+            this.y = ypos;
+            this.g = g;
+            this.h = h;
+        }
+
+        @Override
+        public int compareTo(Object o){
+            Node that = (Node) o;
+            return (int)((this.g + this.h) - (that.g + that.h));
+        }
     }
 }

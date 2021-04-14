@@ -14,6 +14,6 @@ public class Wall extends StaticEntity {
 
     @Override
     public boolean collide(Collideable collideable) {
-        return true;
+        return collideable.askCollision(this, true, Boolean::logicalAnd);
     }
 }

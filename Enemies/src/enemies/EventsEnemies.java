@@ -1,6 +1,7 @@
 package enemies;
 
 import base.model.board.statics.NormalSlot;
+import enemies.model.ModelEnemies;
 import meta.Plugin;
 import meta.events.Events;
 import model.Room;

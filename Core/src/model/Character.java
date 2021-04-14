@@ -77,8 +77,9 @@ public abstract class Character {
 
     /**
      * Tue le personnage
+     * @param source La source de la mort
      */
-    public void kill(){
+    public void kill(String source){
         dead = true;
     }
 
