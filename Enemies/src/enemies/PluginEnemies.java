@@ -71,14 +71,17 @@ public class PluginEnemies extends Plugin {
                         path = controller.solve(game.player.position);
                     }
                     else{
-                        c.position.x = path.get(((Enemy) c).getTick_num()).x;
-                        c.position.y = path.get(((Enemy) c).getTick_num()).y;
-                        // Permet au joueur d'avoir le temps de se déplacer -> sinon l'ennemi est trop rapide
-                        if (game.gen.should(ENEMY_FOLLOW_MOVE_ODDS)) {
-                            //c.orientation = Character.Orientation.RIGHT; // A changé, creer des erreurs sinon
-                            controller.move(c.position);
-                            ((Enemy) c).upTick_num();
+                        if(((Enemy) c).getTick_num() < path.size()){
+                            c.position.x = path.get(((Enemy) c).getTick_num()).x;
+                            c.position.y = path.get(((Enemy) c).getTick_num()).y;
+                            // Permet au joueur d'avoir le temps de se déplacer -> sinon l'ennemi est trop rapide
+                            if (game.gen.should(ENEMY_FOLLOW_MOVE_ODDS)) {
+                                //c.orientation = Character.Orientation.RIGHT; // A changé, creer des erreurs sinon
+                                controller.move(c.position);
+                                ((Enemy) c).upTick_num();
+                            }
                         }
+
                     }
                 }
 
