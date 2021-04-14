@@ -1,14 +1,13 @@
 package enemies.model;
 
-import base.model.board.statics.Wall;
-import model.Character;
 import model.CharacterController;
+import model.Collideable;
 import model.Room;
 import model.board.statics.StaticEntity;
 import util.Position;
 
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * CharacterControllerEnemy implemente A* search Algorithme
@@ -60,7 +59,7 @@ public class CharacterControllerEnemy extends CharacterController {
      * Constructeur de CharacterControllerEnemy
      * @param character
      */
-    public CharacterControllerEnemy(Character character) {
+    public CharacterControllerEnemy(Enemy character) {
         super(character);
         this.open = new ArrayList<>();
         this.closed = new ArrayList<>();
@@ -167,7 +166,8 @@ public class CharacterControllerEnemy extends CharacterController {
                 if ((x != 0 || y != 0) //si on est pas au même endroit
                         && this.now.x + x >= 0 && this.now.x + x < Room.SIZE_X // verification qu'on ne sort pas du cadre
                         && this.now.y + y >= 0 && this.now.y + y < Room.SIZE_Y
-                        && !findNeighbor(this.open, node) && !findNeighbor(this.closed, node)) { // si ce n'a pas déjà été fait
+                        && !findNeighbor(this.open, node) && !findNeighbor(this.closed, node)
+                        && !room[now.x + x][now.y + y].collide((Collideable) character)) { // si ce n'a pas déjà été fait
                     node.g = node.parent.g + 1.; // coût Horizontal/vertical = 1.0
 
                     this.open.add(node); // Ajout aux noeud qui ont été déjà fait

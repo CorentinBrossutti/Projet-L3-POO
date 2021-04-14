@@ -6,8 +6,6 @@ import enemies.model.ModelEnemies;
 import meta.Plugin;
 import model.Character;
 import model.Game;
-import model.Player;
-import util.Position;
 import view.RotatableImageIcon;
 import view.ViewControllerHandle;
 
@@ -23,11 +21,7 @@ public class PluginEnemies extends Plugin {
      * Handler du controller
      */
     public static final String ENEMY_CTRL_HANDLER = "enemy";
-
-    /**
-     * Probabilité que l'ennemi se déplace 1/4
-     */
-    public static final byte ENEMY_MOVE_ODDS = 4;
+    public static final byte ENEMY_RANDOM_MOVE_ODDS = 4, ENEMY_FOLLOW_MOVE_ODDS = 10;
 
     protected int tick_num = 0;
     protected ArrayList<CharacterControllerEnemy.Node> path;
@@ -37,11 +31,6 @@ public class PluginEnemies extends Plugin {
      */
     public RotatableImageIcon enemy;
 
-    /**
-     * Constructeur du plugin
-     * @param game
-     * @param handle
-     */
     public PluginEnemies(Game game, ViewControllerHandle handle) {
         super(game, handle, "enemies");
 
@@ -60,9 +49,6 @@ public class PluginEnemies extends Plugin {
         registerCharacter(e, enemy);
     }
 
-    /**
-     * Fonction tick - gère la distance avec le joueur et les actions qui en découle.
-     */
     @Override
     public void tick() {
         for(Character c : game.characters){
@@ -72,7 +58,7 @@ public class PluginEnemies extends Plugin {
 
                 // Si il y a une collision avec le joueur -> le joueur est tué
                 if(dist == 0)
-                    game.player.kill();
+                    game.player.kill(ModelEnemies.ENEMY_DEATH_SOURCE);
 
                 // Si le joueur est dans le périmètre d'action de l'ennemi, l'ennemi se dirige vers le joueur
                 else if(dist <= ENEMY_RANGE){
@@ -88,8 +74,8 @@ public class PluginEnemies extends Plugin {
                         c.position.x = path.get(((Enemy) c).getTick_num()).x;
                         c.position.y = path.get(((Enemy) c).getTick_num()).y;
                         // Permet au joueur d'avoir le temps de se déplacer -> sinon l'ennemi est trop rapide
-                        if (game.gen.should(10)) {
-                            c.orientation = Character.Orientation.RIGHT; // A changé, creer des erreurs sinon
+                        if (game.gen.should(ENEMY_FOLLOW_MOVE_ODDS)) {
+                            //c.orientation = Character.Orientation.RIGHT; // A changé, creer des erreurs sinon
                             controller.move(c.position);
                             ((Enemy) c).upTick_num();
                         }
@@ -97,7 +83,7 @@ public class PluginEnemies extends Plugin {
                 }
 
                 // Si le joueur n'est pas dans le périmètre de l'ennemi on fais des mouvement aléatoire sur le terrain
-                else if(dist > ENEMY_RANGE && game.gen.should(ENEMY_MOVE_ODDS))
+                else if(dist > ENEMY_RANGE && game.gen.should(ENEMY_RANDOM_MOVE_ODDS))
                     controller.randomMovement();
             }
         }
