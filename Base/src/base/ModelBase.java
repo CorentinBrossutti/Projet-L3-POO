@@ -88,12 +88,11 @@ public class ModelBase extends Model {
                     if (room.start.x < 0 || room.start.y < 0) {
                         room.start.x = x;
                         room.start.y = y;
-                    }
-                    else{
+                    } else {
                         // On y ajoute un objet aléatoire (ou pas, si la fonction de sélection retourne NoItem)
                         Item i = plugin.game.gen.pickItem();
                         ((NormalSlot) temp).item = i;
-                        if(i instanceof Key)
+                        if (i instanceof Key)
                             roomHasKey = true;
                     }
                 }
@@ -120,7 +119,7 @@ public class ModelBase extends Model {
             if (!(room.getStatic(ns.x, ns.y) instanceof NormalSlot))
                 room.addStatic(new NormalSlot(room), ns.x, ns.y);
 
-            if(roomHasKey && plugin.game.gen.should(LOCKED_ODDS))
+            if (roomHasKey && plugin.game.gen.should(LOCKED_ODDS))
                 d.mark(false);
         }
     }

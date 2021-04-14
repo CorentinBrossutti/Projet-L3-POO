@@ -90,29 +90,6 @@ public class CharacterControllerEnemy extends CharacterController {
         this.xStart = character.position.x;
         this.yStart = character.position.y;
     }
-    /**
-     * Classe interne pour les neouds
-     */
-    public class Node implements Comparable{
-        public Node parent;
-        public int x,y;
-        public double g;
-        public double h;
-
-        Node(Node parent, int xpos, int ypos, double g, double h){
-            this.parent = parent;
-            this.x = xpos;
-            this.y = ypos;
-            this.g = g;
-            this.h = h;
-        }
-
-        @Override
-        public int compareTo(Object o){
-            Node that = (Node) o;
-            return (int)((this.g + this.h) - (that.g + that.h));
-        }
-    }
 
     /**
      * Recherche le chemin vers la position du joueur ou retourne null
@@ -194,5 +171,29 @@ public class CharacterControllerEnemy extends CharacterController {
      */
     public void randomMovement(){
         move(character.game.gen.randomOrientation());
+    }
+
+    /**
+     * Classe interne pour les neouds
+     */
+    public class Node implements Comparable{
+        public Node parent;
+        public int x,y;
+        public double g;
+        public double h;
+
+        Node(Node parent, int xpos, int ypos, double g, double h){
+            this.parent = parent;
+            this.x = xpos;
+            this.y = ypos;
+            this.g = g;
+            this.h = h;
+        }
+
+        @Override
+        public int compareTo(Object o){
+            Node that = (Node) o;
+            return (int)((this.g + this.h) - (that.g + that.h));
+        }
     }
 }

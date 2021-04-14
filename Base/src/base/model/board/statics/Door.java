@@ -33,7 +33,7 @@ public class Door extends StaticEntity implements Usable {
     @Override
     public boolean collide(Collideable collideable) {
         // Si la porte est verrouillée, alors il y a collision
-        if(collideable instanceof Player && ((Player) collideable).inventory.has(Key.class)){
+        if (collideable instanceof Player && ((Player) collideable).inventory.has(Key.class)) {
             ((Player) collideable).inventory.removeOneOf(Key.class);
             locked = false;
         }
