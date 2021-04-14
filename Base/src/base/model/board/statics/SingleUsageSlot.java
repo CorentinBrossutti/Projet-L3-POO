@@ -1,5 +1,6 @@
 package base.model.board.statics;
 
+import base.ModelBase;
 import base.model.board.items.WaterCap;
 import model.Character;
 import model.Collideable;
@@ -45,7 +46,7 @@ public class SingleUsageSlot extends NormalSlot implements Usable {
         super.enter(character);
 
         if (!usable)
-            character.kill();
+            character.kill(ModelBase.SU_SLOT_DEATH_SOURCE);
     }
 
     @Override

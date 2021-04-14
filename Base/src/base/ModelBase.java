@@ -21,6 +21,9 @@ import static model.Room.SIZE_Y;
 
 public class ModelBase extends Model {
     public static final byte LOCKED_ODDS = 2;
+    public static final String
+            HOLE_DEATH_SOURCE = "falling",
+            SU_SLOT_DEATH_SOURCE = "burning";
 
     public ModelBase(PluginBase pluginBase, Plugin plugin) {
         super(plugin);

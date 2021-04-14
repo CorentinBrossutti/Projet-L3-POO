@@ -1,5 +1,6 @@
 package enemies.model;
 
+import base.ModelBase;
 import base.model.board.statics.Door;
 import base.model.board.statics.Hole;
 import base.model.board.statics.SingleUsageSlot;
@@ -27,15 +28,19 @@ public class Enemy extends Character implements Collideable {
     @Override
     public Boolean collidesWith(StaticEntity staticEntity) {
         // Il y a une grande chance qu'il ignore la collision, afin qu'il ne meure pas trop vite
-        if(game.gen.should(COLLISION_ODDS)){
-            if(staticEntity instanceof Hole)
-                return false;
-            else if(staticEntity instanceof SingleUsageSlot)
-                return false;
-        }
-        if(staticEntity instanceof Door)
+        if(staticEntity instanceof SingleUsageSlot && game.gen.should(COLLISION_ODDS))
+            return false;
+        else if(staticEntity instanceof Hole)
+            return false;
+        else if(staticEntity instanceof Door)
             return true;
 
         return null;
+    }
+
+    @Override
+    public void kill(String source) {
+        if(source.equals(ModelBase.SU_SLOT_DEATH_SOURCE))
+            super.kill(source);
     }
 }

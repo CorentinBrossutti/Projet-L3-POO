@@ -2,6 +2,7 @@ package enemies;
 
 import enemies.model.CharacterControllerEnemy;
 import enemies.model.Enemy;
+import enemies.model.ModelEnemies;
 import meta.Plugin;
 import model.Character;
 import model.Game;
@@ -18,17 +19,18 @@ public class PluginEnemies extends Plugin {
     public static final double ENEMY_RANGE = 10.;
     public static final String ENEMY_CTRL_HANDLER = "enemy";
     public static final byte ENEMY_MOVE_ODDS = 4;
-    private int tick_num = 0;
-    private ArrayList<CharacterControllerEnemy.Node> path;
+
+    protected int tick_num = 0;
+    protected ArrayList<CharacterControllerEnemy.Node> path;
 
     public RotatableImageIcon enemy;
 
     public PluginEnemies(Game game, ViewControllerHandle handle) {
         super(game, handle, "enemies");
 
-        model = new ModelEnemies(this);
         viewController = new ViewControllerEnemies(this, handle);
         events = new EventsEnemies(this);
+        model = new ModelEnemies(this);
     }
 
     public void registerEnemy(int x, int y){
@@ -44,7 +46,7 @@ public class PluginEnemies extends Plugin {
                 double dist = c.position.distance(game.player.position);
 
                 if(dist == 0)
-                    game.player.kill();
+                    game.player.kill(ModelEnemies.ENEMY_DEATH_SOURCE);
                 else if(dist <= ENEMY_RANGE){
                         path = controller.solve(game.player.position);
                         c.position.x = path.get(tick_num).x;

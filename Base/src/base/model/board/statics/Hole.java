@@ -1,5 +1,6 @@
 package base.model.board.statics;
 
+import base.ModelBase;
 import model.Character;
 import model.Collideable;
 import model.Room;
@@ -20,6 +21,6 @@ public class Hole extends StaticEntity {
 
     @Override
     public void enter(Character character) {
-        character.kill();
+        character.kill(ModelBase.HOLE_DEATH_SOURCE);
     }
 }
