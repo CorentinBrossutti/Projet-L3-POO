@@ -1,5 +1,6 @@
 package enemies.model;
 
+import base.model.board.statics.Wall;
 import model.Character;
 import model.CharacterController;
 import model.Room;
@@ -16,17 +17,17 @@ public class CharacterControllerEnemy extends CharacterController {
     /**
      * open est une ArrayList des noeuds pas encore explorés
      */
-    private final ArrayList<Node> open;
+    private ArrayList<Node> open;
 
     /**
      * clodes est une ArrayListe des noeuds explorés
      */
-    private final ArrayList<Node> closed;
+    private ArrayList<Node> closed;
 
     /**
      * path est l'ArrayList du chemin vers le joueur
      */
-    private final ArrayList<Node> path;
+    private ArrayList<Node> path;
 
     /**
      * room est la liste de nos entitées static
@@ -41,12 +42,12 @@ public class CharacterControllerEnemy extends CharacterController {
     /**
      * xstart est la position en x initiale de l'ennemi - A changer en position
      */
-    private final int xStart;
+    private int xStart;
 
     /**
      * ystart est la position en y initale de l'ennemi - A changer en position
      */
-    private final int yStart;
+    private int yStart;
 
     /**
      * xPlayer est la position initiale en x du joueur,
@@ -74,6 +75,22 @@ public class CharacterControllerEnemy extends CharacterController {
         this.yStart = character.position.y;
     }
 
+    /**
+     * Procédure de reset des données du charactère controlleur
+     */
+    private void resetCharacterControllerEnemy(){
+        this.open = new ArrayList<>();
+        this.closed = new ArrayList<>();
+        this.path = new ArrayList<>();
+        for(int i = 0; i < Room.SIZE_X; i++) {
+            for (int j = 0; j < Room.SIZE_Y; j++){
+                room[i][j] = character.room().getStatic(i,j);
+            }
+        }
+        this.now = new Node(null, character.position.x, character.position.y, 0, 0);
+        this.xStart = character.position.x;
+        this.yStart = character.position.y;
+    }
     /**
      * Classe interne pour les neouds
      */
@@ -150,16 +167,14 @@ public class CharacterControllerEnemy extends CharacterController {
                 if ((x != 0 || y != 0) //si on est pas au même endroit
                         && this.now.x + x >= 0 && this.now.x + x < Room.SIZE_X // verification qu'on ne sort pas du cadre
                         && this.now.y + y >= 0 && this.now.y + y < Room.SIZE_Y
-                        //&& character.room().getStatic(this.now.x + x,this.now.y + y).collide(); // check si ce n'est pas un mur
                         && !findNeighbor(this.open, node) && !findNeighbor(this.closed, node)) { // si ce n'a pas déjà été fait
                     node.g = node.parent.g + 1.; // coût Horizontal/vertical = 1.0
-                    //node.g += room[this.now.y + y][this.now.x + x]; //ajoute le coût du mouvement
 
                     this.open.add(node); // Ajout aux noeud qui ont été déjà fait
                 }
             }
         }
-        Collections.sort(this.open); // on trie la liste de mouvement
+        Collections.sort(this.open); // on trie la liste des noeuds non explorés
     }
 
     /**
@@ -168,6 +183,8 @@ public class CharacterControllerEnemy extends CharacterController {
      * @return La liste des mouvements pour atteindre le joueur
      */
     public ArrayList<Node> solve(Position position_player){
+        path.clear();
+        resetCharacterControllerEnemy(); // On reset ici car sinon cela creer des problèmes -> ex: L'ennemi retourne à son xStart et yStart précedement calculé (et qui n'est donc plus bon)
         findPathTo(position_player);
         return this.path;
     }
